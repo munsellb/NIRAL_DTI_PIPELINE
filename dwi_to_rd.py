@@ -33,15 +33,28 @@ def checkParameters(parameters, valid_ones):
 	for k in parameters.keys():
 		if not (k in valid_ones):
 			print "ERROR:", k, "is not a valid paramater!"
+			print "For more information use --help"
 			exit(-1)
 		if parameters[k][0] == '-':
 			print "ERROR:",parameters[k], "is not a valid parameter value for", k
+			print "For more information use --help"
 			exit(-1)
+
+if len(sys.argv) > 1 and sys.argv[1] == "--help":
+	print "This script creates an RD File from a brain volume"
+	print "Syntax to run this script: dwi_to_rd.py -config config_filename"
+	print "The config file requires the following format:"
+	print "DWIVolume:DWIVolume_DIRECTORY"
+	print "outputRD:outputRD_DIRECTORY"
+	print "Mask:Mask_DIRECTORY"
+	exit(0)
+
 		
 print "Num of arguments passed:",len(sys.argv) -1
 
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
+	print "For more information use --help"
 	exit(-1)
 
 i = 1
@@ -64,11 +77,13 @@ f = open(arguments["config"])
 lines = f.readlines()
 if len(lines) != NUM_PARAMETERS:
 	print "ERROR: the config file should only contain",NUM_PARAMETERS,"parameters"
+	print "For more information use --help"
 	exit(-1)
 	
 for i in range(0, NUM_PARAMETERS):
 	if lines[i].find(":") == -1:
-		print "ERROR: The line",i+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE" 
+		print "ERROR: The line",i+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE"
+		print "For more information use --help"
 		exit(-1)
 	tokens = lines[i].rstrip().split(":")
 	
