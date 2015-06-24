@@ -13,7 +13,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "--------- This is the FTD Probtrackx2 script ---------------"
   print "  "
   print "Sintax to run the script: ftd_probtrackx2.py -config 'config_file_name.txt'"
-  print "Example: ftd_probtrackx2.py -config config_probtrackx2.py"
+  print "Example: ftd_probtrackx2.py -config config_probtrackx2.txt"
   print "   "
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
