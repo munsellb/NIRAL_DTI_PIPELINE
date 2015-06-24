@@ -1,0 +1,6 @@
+ATLAS:/usr/local/data/DTI_Summer15/struct_atlas/atlas90-Parclabel_1year-Average-IBIS.nrrd
+OUT_ANTS_PREFIX:warp_t1w_t2w_
+T2:/usr/local/data/DTI_Summer15/struct_atlas/1year-Average-IBIS-MNI-t2w.nrrd
+T1:/usr/local/data/DTI_Summer15/struct_atlas/1year-Average-IBIS-MNI-t1w.nrrd
+RD:subject4-1year_42_DWI-Trio_QCed_VC_Upx2_RD.nii.gz
+SubjectFolder:/home/workstation2/Documents/Subject4/Upsampled_1mm

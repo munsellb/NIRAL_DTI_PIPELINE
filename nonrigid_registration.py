@@ -2,7 +2,7 @@
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 5		
+NUM_PARAMETERS = 6		
 slash = "/"
 import sys
 import os
@@ -22,6 +22,7 @@ def checkParameters(parameters, valid_ones):
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
 	print "This script creates Exclusion, Termination and Waypoint Masks"
 	print "Syntax to run this script: create_fdt_masks.py -config config_filename"
+	print ""
 	print "The config file requires the following format:"
 	print "RD:RD_DIRECTORY"
 	print "T1:T1_DIRECTORY"
@@ -47,7 +48,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["RD", "config", "T1", "T2","ATLAS","OUT_ANTS_PREFIX"]
+arguments_names = ["RD", "config", "SubjectFolder", "T1", "T2","ATLAS","OUT_ANTS_PREFIX"]
 
 checkParameters(arguments, arguments_names)
 
@@ -78,6 +79,17 @@ for i in range(0,len(lines)):
 checkParameters(arguments, arguments_names)
 print arguments_names
 
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+
+arguments["RD"] = subject_folder + arguments["RD"]
+
+os.system("mkdir registration")
+
+arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
 #running ANTS
 os.system("ANTS 3 -m CC\["+arguments["RD"]+","+arguments["T1"]+",1,4\] -m CC\["+arguments["RD"]+","+arguments["T2"]+",1,4\] -r Guass\[3,0\] -i 100x50x25 -t SyN\[0.25\] -o "+arguments["OUT_ANTS_PREFIX"])
 

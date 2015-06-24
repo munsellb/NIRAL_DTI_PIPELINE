@@ -43,6 +43,7 @@ def checkParameters(parameters, valid_ones):
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
 	print "This script creates an RD File from a brain volume"
 	print "Syntax to run this script: dwi_to_rd.py -config config_filename"
+	print ""
 	print "The config file requires the following format:"
 	print "DWIVolume:DWIVolume_DIRECTORY"
 	print "outputRD:outputRD_DIRECTORY"
@@ -67,7 +68,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["DWIVolume", "config", "outputRD", "Mask"]
+arguments_names = ["DWIVolume", "config", "SubjectFolder", "Mask"]
 
 checkParameters(arguments, arguments_names)
 
@@ -94,15 +95,24 @@ for i in range(0, NUM_PARAMETERS):
 checkParameters(arguments, arguments_names)
 print arguments
 
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+for k in arguments.keys():
+  arguments[k] = subject_folder + arguments[k]
+
 #all arguments were checked
 
 #running dtiestim
 outputDTIName = arguments["DWIVolume"]
+  
 #if outputDTIName.find("DWI") != -1:
 	#outputDTIName = outputDTIName.replace("DWI", "DTI")
 #else:
 	#outputDTIName = outputDTIName.split(".")[0] + "_DTI" + "." + outputDTIName.split(".")[1]
-outputDTIName = outputDTIName.split(".")[0] + "_DTI" + "." + outputDTIName.split(".")[1]
+outputDTIName = outputDTIName.split(".")[0] + "_DTI" + ".nii.gz"
 
 os.system("dtiestim -M "+arguments["Mask"]+" -m wls --correctionType nearest --inputDWIVolume "+arguments["DWIVolume"]+" --outputDTIVolume "+outputDTIName)	
 
@@ -110,5 +120,5 @@ os.system("dtiestim -M "+arguments["Mask"]+" -m wls --correctionType nearest --i
 #running dtiprocess
 outputFAName = outputDTIName.replace("DTI", "FA")
 outputRDName = outputDTIName.replace("DTI", "RD")
-os.system("dtiprocess --dti_image "+outputDTIName+" -m "+outputMDName+" --lambda1_output "+outputADName+" --RD_output "+outputRDName+" --fa_output "+outputFAName+" --saveScalarsAsFloat")
+os.system("dtiprocess --dti_image "+outputDTIName+" --RD_output "+outputRDName+" --fa_output "+outputFAName+" --saveScalarsAsFloat")
 
