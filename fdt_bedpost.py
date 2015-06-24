@@ -29,19 +29,39 @@ import sys
 import os
 arguments = {}
 
+if len(sys.argv) > 1 and sys.argv[1] == "--help":
+  print "   "
+  print "-------- This is the FTD Bedpost script -------------------"
+  print "   "
+  print "Sintax to run the script: ftd_bedpost.py -config 'config_file_name.txt'"
+  print "Example: ftd_bedpost.py -config config_bedpost.py"
+  print "   "
+  print "------------------------------------------------------------"
+  print "------- This is how the config file must look like: -------- "
+  print "   "
+  print "DTIPREP_DIR:'point directory where the files will be placed'"
+  print "INPUT_VOL:'point to the input volume file '"
+  print "INPUT_MASK:'point to the mask file'"
+  print "   "
+ 
+  exit(0)
+
 def checkParameters(parameters, valid_ones):
 	for k in parameters.keys():
 		if not (k in valid_ones):
 			print "ERROR:", k, "is not a valid paramater!"
+			print "Please type --help to get more information"
 			exit(-1)
 		if parameters[k][0] == '-':
 			print "ERROR:",parameters[k], "is not a valid parameter value for", k
+			print "Please type --help to get more information"
 			exit(-1)
 		
 print "Num of arguments passed:",len(sys.argv) -1
 
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
+	print "Please type --help to get more information"
 	exit(-1)
 
 i = 1
@@ -54,7 +74,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["DTIPREP_DIR", "config", "INPUT_VOL", "INPUT_MASK", "PERL_SCRIPT"]
+arguments_names = ["DTIPREP_DIR", "config", "INPUT_VOL", "INPUT_MASK"]
 
 checkParameters(arguments, arguments_names)
 
@@ -68,7 +88,8 @@ if len(lines) != NUM_PARAMETERS:
 	
 for i in range(0, NUM_PARAMETERS):
 	if lines[i].find(":") == -1:
-		print "ERROR: The line",i+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE" 
+		print "ERROR: The line",i+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE"
+		print "Please type --help to get more information"
 		exit(-1)
 	tokens = lines[i].rstrip().split(":")
 	
