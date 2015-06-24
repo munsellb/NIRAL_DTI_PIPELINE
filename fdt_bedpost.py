@@ -34,7 +34,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "-------- This is the FTD Bedpost script -------------------"
   print "   "
   print "Sintax to run the script: ftd_bedpost.py -config 'config_file_name.txt'"
-  print "Example: ftd_bedpost.py -config config_bedpost.py"
+  print "Example: ftd_bedpost.py -config config_bedpost.txt"
   print "   "
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
@@ -62,6 +62,7 @@ print "Num of arguments passed:",len(sys.argv) -1
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
 	print "Please type --help to get more information"
+	
 	exit(-1)
 
 i = 1

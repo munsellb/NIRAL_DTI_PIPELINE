@@ -1,0 +1,3 @@
+SubjectFolder:/home/workstation2/Documents/Subject4/Upsampled_1mm
+DWIVolume:subject4-1year_42_DWI-Trio_QCed_VC_Upx2.nrrd
+Mask:subject4-1year-brainmask_Upx2.nrrd
