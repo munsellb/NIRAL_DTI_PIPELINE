@@ -1,0 +1,8 @@
+SubjectFolder:/home/workstation2/Subject2/Upsampled_1mm
+FAVolume:FAVolume.nrrd
+ATLAS:/home/workstation2/sandbox/DTI_Summer15/test/TestAtlas.nrrd
+BrainMask:TestBrainMask.nrrd
+RegionVolume:TestRegion3.nii.gz
+outputWaypoint:TestWaypointMask.nii.gz
+outputTermination:TestTerminationMask.nii.gz
+outputExclusion:TestExclusionMask.nii.gz
