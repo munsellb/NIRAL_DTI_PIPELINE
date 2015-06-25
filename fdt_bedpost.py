@@ -23,7 +23,7 @@
 #  
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 3		
+NUM_PARAMETERS = 4		
 slash = "/"
 import sys
 import os
@@ -75,7 +75,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["DTIPREP_DIR", "config", "INPUT_VOL", "INPUT_MASK"]
+arguments_names = ["DTIPREP_DIR", "config", "INPUT_VOL", "INPUT_MASK","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
 
@@ -100,6 +100,15 @@ for i in range(0, NUM_PARAMETERS):
 checkParameters(arguments, arguments_names)
 print arguments
 	
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+for k in arguments.keys():
+  arguments[k] = subject_folder + arguments[k]	
+	
+
 #all arguments were checked
 if not (arguments["DTIPREP_DIR"][len(arguments["DTIPREP_DIR"]) - 1] == slash):
     arguments["DTIPREP_DIR"] += slash

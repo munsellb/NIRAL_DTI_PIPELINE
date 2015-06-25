@@ -2,7 +2,7 @@
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 4		
+NUM_PARAMETERS = 5		
 slash = "/"
 import sys
 import os
@@ -55,7 +55,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["RD", "config","ATLAS","OUT_ANTS_PREFIX","OUT_WARP"]
+arguments_names = ["RD", "config","ATLAS","OUT_ANTS_PREFIX","OUT_WARP","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
 
@@ -86,6 +86,18 @@ for i in range(0,len(lines)):
 checkParameters(arguments, arguments_names)
 print arguments_names
 
+
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+arguments["RD"] = subject_folder + arguments["RD"]  
+
+os.system("mkdir registration")
+
+arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
+arguments["OUT_WARP"]=subject_folder + "registration/" + arguments["OUT_WARP"]
 
 
 #running WARP

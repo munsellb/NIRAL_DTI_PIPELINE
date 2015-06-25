@@ -2,7 +2,7 @@
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 7		
+NUM_PARAMETERS = 8		
 slash = "/"
 import sys
 import os
@@ -58,9 +58,10 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["BEDPOST", "config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","OUTPUTPROBTRACK","MASKFILE"]
+arguments_names = ["BEDPOST", "config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","OUTPUTPROBTRACK","MASKFILE","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
+
 
 #reading config file and parsing its new parameters
 f = open(arguments["config"])
@@ -79,7 +80,21 @@ for i in range(0,len(lines)):
 		exit(-1)
 	tokens = lines[i].rstrip().split(':')
 	arguments[tokens[0]] = tokens[1]
-	
+
+
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+for k in arguments.keys():
+  arguments[k] = subject_folder + arguments[k]
+  
+os.system("mkdir probtrack")
+
+arguments["OUTPUTPROBTRACK"]=subject_folder + "probtrack/" + arguments["OUTPUTPROBTRACK"]  
+
+
 	
 #print("probtrackx -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" -x "+arguments["SEEDFILE"]+" --waypoints "+arguments["WAYPOINTS"]+" --avoid "+arguments["EXCLUSIONMASK"]+" --stop "+arguments["TERMINATIONMASK"]+" -o "+arguments["OUTPUTPROBTRACK"])		
 #os.system("probtrackx -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" -x "+arguments["SEEDFILE"]+" --waypoints="+arguments["WAYPOINTS"]+" --avoid="+arguments["EXCLUSIONMASK"]+" --stop="+arguments["TERMINATIONMASK"]+" -o "+arguments["OUTPUTPROBTRACK"])
