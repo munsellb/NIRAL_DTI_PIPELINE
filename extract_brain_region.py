@@ -2,7 +2,7 @@
 #__author__ = 'JESSEROCHA'
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 4
+NUM_PARAMETERS = 3
 slash = "/"
 import sys
 import os
@@ -16,9 +16,9 @@ if len(sys.argv) > 1 and sys.argv[1] == "-- help":
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
   print "   "
-  print "INPUT_IMAGE: 'point to the input file and the directory where it is'"
-  print "OUTPUT_IMAGE:'point to the output file and the directory where the files will be placed'"
-  print "EXTRACT_LABEL:'number of label that you want to extract'"
+  print "SubjectFolder: 'A directory that contains image data for an unique subject'"
+  print "INPUT_IMAGE: 'Warped structural atlas located in SubjectFolder/registration'"
+  print "EXTRACT_LABEL:'Label number to extract. The output file is named \"brain<EXTRACT_LABEL>.nii.gz\" and will be located in SubjectFolder/regions'"
   print "  "
   print "  "
  
@@ -54,7 +54,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["config", "INPUT_IMAGE", "OUTPUT_IMAGE","EXTRACT_LABEL","SubjectFolder"]
+arguments_names = ["config", "INPUT_IMAGE","EXTRACT_LABEL","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
 
@@ -86,10 +86,11 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
-for k in arguments.keys():
-  arguments[k] = subject_folder + arguments[k]
+arguments["INPUT_IMAGE"] = subject_folder + "registration/" + arguments["INPUT_IMAGE"]
 
+os.system("mkdir "+subject_folder+"regions")
+output = subject_folder + "regions/brain" + arguments["EXTRACT_LABEL"] + ".nii.gz"
 #running ImageMath
-os.system("ImageMath " + arguments["INPUT_IMAGE"] + " -extractLabel " + arguments["EXTRACT_LABEL"] + " -outfile " + arguments["OUTPUT_IMAGE"] )
+os.system("ImageMath " + arguments["INPUT_IMAGE"] + " -extractLabel " + arguments["EXTRACT_LABEL"] + " -outfile " + output )
 
 f.close()

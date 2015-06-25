@@ -1,5 +1,4 @@
-RD:
-ATLAS:
-OUT_ANTS_PREFIX:
-OUT_WARP:
-SubjectFolder:
+REF:subject4-1year_42_DWI-Trio_QCed_VC_Upx2_RD.nii.gz
+MOV:/usr/local/data/DTI_Summer15/struct_atlas/atlas90-Parclabel_1year-Average-IBIS.nrrd
+OUT_ANTS_PREFIX:warp_t1w_t2w_
+SubjectFolder:/home/workstation2/Documents/Subject4/Upsampled_1mm

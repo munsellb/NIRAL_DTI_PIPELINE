@@ -1,8 +1,5 @@
-BEDPOST:
-SEEDFILE:
-WAYPOINTS:
-TERMINATIONMASK:
-EXCLUSIONMASK:
-OUTPUTPROBTRACK:
-MASKFILE:
-SubjectFolder:
+SEEDFILE:regions/brain1.nii.gz
+WAYPOINTS:masks/waypoint.nii.gz
+TERMINATIONMASK:masks/termination.nii.gz
+EXCLUSIONMASK:masks/exclusion.nii.gz
+SubjectFolder:/home/workstation2/Documents/Subject4/Upsampled_1mm

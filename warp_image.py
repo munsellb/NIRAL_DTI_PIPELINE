@@ -2,7 +2,7 @@
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 5		
+NUM_PARAMETERS = 4		
 slash = "/"
 import sys
 import os
@@ -16,8 +16,8 @@ if len(sys.argv) > 1 and sys.argv[1] == "-- help":
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
   print "   "
-  print "RD:'It is the register'"
-  print "ATLAS:'It is the Atlas'"
+  print "REF:'It is the register'"
+  print "MOV:'It is the Atlas'"
   print "OUT_ANTS_PREFIX:'point directory where the files will be placed'"
   print "OUT_WARP: 'point directory where the files will be placed'"
   print "  "
@@ -55,7 +55,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["RD", "config","ATLAS","OUT_ANTS_PREFIX","OUT_WARP","SubjectFolder"]
+arguments_names = ["REF", "config","MOV","OUT_ANTS_PREFIX","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
 
@@ -92,13 +92,13 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
-arguments["RD"] = subject_folder + arguments["RD"]  
+arguments["REF"] = subject_folder + arguments["REF"]  
 
 os.system("mkdir registration")
 
 arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
-arguments["OUT_WARP"]=subject_folder + "registration/" + arguments["OUT_WARP"]
-
-
+output = subject_folder + "registration/" + arguments["MOV"][arguments["MOV"].rfind("/")+1:]
+output = output[:output.find(".")] + "_warp.nii.gz"
+print "output name: ", output
 #running WARP
-os.system("WarpImageMultiTransform 3 "+arguments["ATLAS"]+" "+arguments["OUT_WARP"]+" -R "+arguments["RD"]+" --use-NN "+arguments["OUT_ANTS_PREFIX"]+"Warp.nii.gz"+" "+arguments["OUT_ANTS_PREFIX"]+"Affine.txt")
+os.system("WarpImageMultiTransform 3 "+arguments["MOV"]+" "+output+" -R "+arguments["REF"]+" --use-NN "+arguments["OUT_ANTS_PREFIX"]+"Warp.nii.gz"+" "+arguments["OUT_ANTS_PREFIX"]+"Affine.txt")

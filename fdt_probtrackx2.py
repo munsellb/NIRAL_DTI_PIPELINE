@@ -2,11 +2,17 @@
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 8		
+NUM_PARAMETERS = 5		
 slash = "/"
 import sys
 import os
 arguments = {}
+
+def create_file(filename, content):
+  f = open(filename, "wt")
+  for c in content:
+    f.write(c + "\n")
+  f.close()
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "   "
@@ -58,7 +64,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["BEDPOST", "config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","OUTPUTPROBTRACK","MASKFILE","SubjectFolder"]
+arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder"]
 
 checkParameters(arguments, arguments_names)
 
@@ -90,13 +96,30 @@ if subject_folder[len(subject_folder)-1] != '/':
 for k in arguments.keys():
   arguments[k] = subject_folder + arguments[k]
   
-os.system("mkdir probtrack")
-
-arguments["OUTPUTPROBTRACK"]=subject_folder + "probtrack/" + arguments["OUTPUTPROBTRACK"]  
-
+output = subject_folder + "probtrack/"
+os.system("mkdir " + output)
 
 	
 #print("probtrackx -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" -x "+arguments["SEEDFILE"]+" --waypoints "+arguments["WAYPOINTS"]+" --avoid "+arguments["EXCLUSIONMASK"]+" --stop "+arguments["TERMINATIONMASK"]+" -o "+arguments["OUTPUTPROBTRACK"])		
 #os.system("probtrackx -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" -x "+arguments["SEEDFILE"]+" --waypoints="+arguments["WAYPOINTS"]+" --avoid="+arguments["EXCLUSIONMASK"]+" --stop="+arguments["TERMINATIONMASK"]+" -o "+arguments["OUTPUTPROBTRACK"])
+
+waypoints_file = output+"waypoints.txt"
+
+create_file(waypoints_file, [arguments["WAYPOINTS"]])
 	
-os.system("probtrackx2 -x "+arguments["SEEDFILE"]+" -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 --avoid="+arguments["EXCLUSIONMASK"]+" --stop="+arguments["TERMINATIONMASK"]+" --forcedir --opd -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" --dir="+os.getcwd()+"/probtrack_test"+" --waypoints="+arguments["WAYPOINTS"]+" --waycond=AND")	
+cmd = "probtrackx2 -x " + arguments["SEEDFILE"] + " -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 "
+
+cmd = cmd + "--avoid="+arguments["EXCLUSIONMASK"] + " "
+
+cmd = cmd + "--stop="+arguments["TERMINATIONMASK"] + " "
+
+cmd = cmd + "--forcedir --opd -s "+subject_folder + "dtiprep.bedpostX/merged "
+
+cmd = cmd + "-m "+subject_folder + "dtiprep.bedpostX/nodif_brain_mask "
+
+cmd = cmd + "--dir="+subject_folder + "probtrack "
+
+cmd = cmd + "--waypoints="+waypoints_file+" --waycond=AND"
+
+#os.system("probtrackx2 -x "+arguments["SEEDFILE"]+" -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 --avoid="+arguments["EXCLUSIONMASK"]+" --stop="+arguments["TERMINATIONMASK"]+" --forcedir --opd -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" --dir="+os.getcwd()+"/probtrack_test"+" --waypoints="+arguments["WAYPOINTS"]+" --waycond=AND")	
+os.system(cmd)

@@ -122,7 +122,7 @@ os.system("ImageMath "+outputBinaryHalfInvertedMask+" -constOper 2,-1 -outfile "
 os.system("ImageMath "+arguments["ATLAS"]+" -mask "+outputBinaryInvertedMask+" -outfile "+arguments["outputTermination"])
 
 terminationEroded = arguments["outputTermination"].split(".")[0] + "_eroded" + arguments["outputTermination"][arguments["outputTermination"].index("."):]
-os.system("ImageMath "+arguments["outputTermination"]+" -erode 10,10"+" -outfile "+terminationEroded)
+os.system("ImageMath "+arguments["outputTermination"]+" -erode 2,1"+" -outfile "+terminationEroded)
 
 outputBinaryHalfInvertedBrainMask = arguments["BrainMask"]
 outputBinaryHalfInvertedBrainMask = outputBinaryHalfInvertedBrainMask.split(".")[0] + "_Binary_Half_Inv_Brain_Mask" + outputBinaryHalfInvertedBrainMask[outputBinaryHalfInvertedBrainMask.index("."):]
