@@ -44,13 +44,28 @@ def findBrainMask(files):
     
   return None
 
+def findRD(files):
+  for f in files:
+    if (f.find("RD") != -1):
+      return f
+    
+  return None
+
+def findFA(files):
+  for f in files:
+    if (f.find("FA") != -1):
+      return f
+    
+  return None
+
 def createConfigFile(filename, parameters):
   f = open(filename, "wt")
+  
   for k in parameters.keys():
     f.write(k+":"+parameters[k]+"\n")
   f.close()
 
-def createConfigFiles(subject_folder, arguments):
+def createInvariableConfigFiles(subject_folder, arguments):
   
   if subject_folder[len(subject_folder)-1] != '/':
     subject_folder=subject_folder + "/"
@@ -60,8 +75,11 @@ def createConfigFiles(subject_folder, arguments):
   
   subject_files  = os.listdir( subject_folder )
   
-  createConfigFile("config_dwi_to_rd.txt", {"Mask":findBrainMask(subject_files), ""})
-  
+  createConfigFile("config_dwi_to_dti.txt", {"Mask":findBrainMask(subject_files), "DWIVolume":findDWI(subject_files), "SubjectFolder":subject_folder})
+  OUT_ANTS_PREFIX = "warp_t1w_t2w_"
+  createConfigFile("config_nonrigid_registration.txt", {"ATLAS":arguments["ATLAS"], "OUT_ANTS_PREFIX": OUT_ANTS_PREFIX, "RD":findRD(subject_files), "T1":arguments["T1"], "T2":arguments["T2"], "SubjectFolder":subject_folder})
+  createConfigFile("config_warp_image.txt", {"REF":findRD(subject_files),"MOV":arguments["ATLAS"],"OUT_ANTS_PREFIX":OUT_ANTS_PREFIX,"SubjectFolder":subject_folder})
+  createConfigFile("config_bedpost.txt", {"INPUT_VOL":findDWI(subject_files), "INPUT_MASK":findBrainMask(subject_files), "SubjectFolder":subject_folder})
 
 def checkParameters(parameters, valid_ones):
 	for k in parameters.keys():
@@ -131,11 +149,49 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
 
-f = open(subject_folder + arguments["SubjectList"])
+f = open(arguments["SubjectList"])
 
 for subject in f.readlines():
   print "Running the following subject: ", subject.rstrip()
+  
   current_subject_folder = subject_folder + subject.rstrip()
   
-
-
+  if current_subject_folder[len(current_subject_folder)-1] != '/':
+    current_subject_folder=current_subject_folder + "/"
+  current_subject_files  = os.listdir( current_subject_folder ) 
+  #createInvariableConfigFiles(current_subject_folder, arguments)
+  
+  #createConfigFile(current_subject_folder+"config/config_dwi_to_dti.txt", {"Mask":findBrainMask(current_subject_files), "DWIVolume":findDWI(current_subject_files), "SubjectFolder":current_subject_folder})
+  #print "Running DWI to DTI script:"
+  #os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt")
+  
+  #OUT_ANTS_PREFIX = "warp_t1w_t2w_"
+  #createConfigFile(current_subject_folder+"config/config_nonrigid_registration.txt", {"ATLAS":arguments["ATLAS"], "OUT_ANTS_PREFIX":OUT_ANTS_PREFIX, "RD":findRD(current_subject_files), "T1":arguments["T1"], "T2":arguments["T2"], "SubjectFolder":current_subject_folder})
+  #print "Running Non Rigid Registration script:"
+  #os.system("python nonrigid_registration.py -config "+current_subject_folder+"config/config_nonrigid_registration.txt")
+  
+  #createConfigFile(current_subject_folder+"config/config_warp_image.txt", {"REF":findRD(current_subject_files),"MOV":arguments["ATLAS"],"OUT_ANTS_PREFIX":OUT_ANTS_PREFIX,"SubjectFolder":current_subject_folder})
+  #print "Running Warp Image script:"
+  #os.system("python warp_image.py -config "+current_subject_folder+"config/config_warp_image.txt")
+  
+  #createConfigFile(current_subject_folder+"config/config_bedpost.txt", {"INPUT_VOL":findDWI(current_subject_files), "INPUT_MASK":findBrainMask(current_subject_files), "SubjectFolder":current_subject_folder})
+  #print "Running Bedpost script:"
+  #os.system("python fdt_bedpost.py -config "+current_subject_folder+"config/config_bedpost.txt")
+  
+  warped_atlas = arguments["ATLAS"][:arguments["ATLAS"].find(".")] + "_deform.nii.gz"
+  
+  for i in range(1,2):
+    
+    
+    print "Extracting region " + str(i)
+    createConfigFile(current_subject_folder+"config/config_extract_regions.txt", {"INPUT_IMAGE":warped_atlas, "EXTRACT_LABEL":str(i), "SubjectFolder":current_subject_folder})
+    os.system("python extract_brain_region.py -config "+current_subject_folder+"config/config_extract_regions.txt")
+    
+    print "Running FDT Masks script on region " + str(i)
+    createConfigFile(current_subject_folder+"config/config_create_fdt_masks.txt", {"SubjectFolder":current_subject_folder, "FAVolume":findFA(current_subject_files), "RDVolume":findRD(current_subject_files), "BrainMask":findBrainMask(current_subject_files), "region_label":str(i) })
+    os.system("python create_fdt_masks.py -config "+current_subject_folder+"config/config_create_fdt_masks.txt")
+    
+    print "Running Probtrack script on region " + str(i)
+    createConfigFile(current_subject_folder+"config/config_probtrack.txt", {"SEEDFILE":"regions/"+"brain"+str(i)+".nii.gz", "WAYPOINTS":"masks/waypoint.nii.gz", "TERMINATIONMASK":"masks/termination.nii.gz", "EXCLUSIONMASK":"masks/exclusion.nii.gz", "SubjectFolder":current_subject_folder })
+    #os.system("python fdt_probtrackx2.py -config "+current_subject_folder+"config/config_probtrack.txt")
+    

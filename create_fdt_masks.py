@@ -23,11 +23,19 @@
 #  
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 8		
+NUM_PARAMETERS = 5		
 slash = "/"
 import sys
 import os
 arguments = {}
+
+def findATLAS(files):
+  for f in files:
+    if f.find("deform") != -1:
+      return f
+    
+  return None
+    
 
 def checkParameters(parameters, valid_ones):
 	for k in parameters.keys():
@@ -51,9 +59,6 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
 	print "FAVolume:FAVolume_DIRECTORY"
 	print "BrainMask:BrainMask_DIRECTORY"
 	print "RegionVolume:RegionVolume_DIRECTORY"
-	print "outputTermination:outputTermination_DIRECTORY"
-	print "outputExclusion:outputExclusion_DIRECTORY"
-	print "outputWaypoint:outputWaypoint_DIRECTORY"
 	exit(0)
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
@@ -70,7 +75,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["SubjectFolder", "ATLAS", "FAVolume", "BrainMask", "RegionVolume", "config", "outputWaypoint", "outputTermination", "outputExclusion"]
+arguments_names = ["SubjectFolder", "FAVolume", "BrainMask", "RDVolume", "region_label", "config"]
 
 checkParameters(arguments, arguments_names)
 
@@ -102,30 +107,49 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
-arguments["FAVolume"] = subject_folder + arguments["FAVolume"]
-arguments["BrainMask"] = subject_folder + arguments["BrainMask"]
-arguments["RegionVolume"] = subject_folder + arguments["RegionVolume"]
-arguments["outputWaypoint"] = subject_folder + arguments["outputWaypoint"]
-arguments["outputExclusion"] = subject_folder + arguments["outputExclusion"]
-arguments["outputTermination"] = subject_folder + arguments["outputTermination"]
+mask_folder = subject_folder + "masks/"
+region_folder = subject_folder + "regions/"
+registration_folder = subject_folder + "registration/"
 
-os.system("ImageMath "+arguments["FAVolume"]+" -threshold 0.15,1.0 -outfile "+arguments["outputWaypoint"])
-outputBinaryHalfInvertedMask = arguments["RegionVolume"]
+os.system("mkdir "+ mask_folder)
+
+arguments["FAVolume"] = subject_folder + arguments["FAVolume"]
+arguments["RDVolume"] = subject_folder + arguments["RDVolume"]
+arguments["BrainMask"] = subject_folder + arguments["BrainMask"]
+region_mask = region_folder + "brain" + arguments["region_label"] + ".nii.gz"
+waypoint_mask = mask_folder + "waypoint.nii.gz"
+exclusion_mask = mask_folder + "exclusion.nii.gz"
+termination_mask = mask_folder + "termination.nii.gz"
+rd_threshold_mask = mask_folder + "rdthresh.nii.gz"
+deformed_struct_atlas = registration_folder + findATLAS(os.listdir(registration_folder))
+
+# -------------------------------------------------------------
+# creating waypoint mask
+
+os.system("ImageMath "+arguments["FAVolume"]+" -threshold 0.15,1.0 -outfile "+waypoint_mask)
+
+# -------------------------------------------------------------
+# creating termination mask
+outputBinaryHalfInvertedMask = region_mask
 outputBinaryHalfInvertedMask = outputBinaryHalfInvertedMask.split(".")[0] + "_Binary_Half_Inv_Mask" + outputBinaryHalfInvertedMask[outputBinaryHalfInvertedMask.index("."):]
 
-outputBinaryInvertedMask = arguments["RegionVolume"]
+outputBinaryInvertedMask = region_mask
 outputBinaryInvertedMask = outputBinaryInvertedMask.split(".")[0] + "_Binary_Inv_Mask" + outputBinaryInvertedMask[outputBinaryInvertedMask.index("."):]
 
-os.system("ImageMath "+arguments["RegionVolume"]+" -constOper 1,1 -outfile "+outputBinaryHalfInvertedMask)
+os.system("ImageMath "+region_mask+" -constOper 1,1 -outfile "+outputBinaryHalfInvertedMask)
 os.system("ImageMath "+outputBinaryHalfInvertedMask+" -constOper 2,-1 -outfile "+outputBinaryInvertedMask)
 
-os.system("ImageMath "+arguments["ATLAS"]+" -mask "+outputBinaryInvertedMask+" -outfile "+arguments["outputTermination"])
+os.system("ImageMath "+deformed_struct_atlas+" -mask "+outputBinaryInvertedMask+" -outfile "+termination_mask)
+os.system("ImageMath "+termination_mask+" -erode 2,1"+" -outfile "+termination_mask)
 
-terminationEroded = arguments["outputTermination"].split(".")[0] + "_eroded" + arguments["outputTermination"][arguments["outputTermination"].index("."):]
-os.system("ImageMath "+arguments["outputTermination"]+" -erode 2,1"+" -outfile "+terminationEroded)
-
+# -------------------------------------------------------------
+# creating exclusion mask
 outputBinaryHalfInvertedBrainMask = arguments["BrainMask"]
 outputBinaryHalfInvertedBrainMask = outputBinaryHalfInvertedBrainMask.split(".")[0] + "_Binary_Half_Inv_Brain_Mask" + outputBinaryHalfInvertedBrainMask[outputBinaryHalfInvertedBrainMask.index("."):]
 
 os.system("ImageMath "+arguments["BrainMask"]+" -constOper 1,1 -outfile "+outputBinaryHalfInvertedBrainMask)
-os.system("ImageMath "+outputBinaryHalfInvertedBrainMask+" -constOper 2,-1 -outfile "+arguments["outputExclusion"])
+os.system("ImageMath "+outputBinaryHalfInvertedBrainMask+" -constOper 2,-1 -outfile "+exclusion_mask)
+
+os.system("ImageMath "+arguments["RDVolume"]+" -threshold 0.001,1 -outfile "+ rd_threshold_mask)
+
+os.system("ImageMath "+exclusion_mask+" -add "+ rd_threshold_mask + " -outfile "+ exclusion_mask)

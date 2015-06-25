@@ -98,7 +98,7 @@ os.system("mkdir registration")
 
 arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
 output = subject_folder + "registration/" + arguments["MOV"][arguments["MOV"].rfind("/")+1:]
-output = output[:output.find(".")] + "_warp.nii.gz"
+output = output[:output.find(".")] + "_deform.nii.gz"
 print "output name: ", output
 #running WARP
 os.system("WarpImageMultiTransform 3 "+arguments["MOV"]+" "+output+" -R "+arguments["REF"]+" --use-NN "+arguments["OUT_ANTS_PREFIX"]+"Warp.nii.gz"+" "+arguments["OUT_ANTS_PREFIX"]+"Affine.txt")

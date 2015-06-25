@@ -1,0 +1,5 @@
+ATLAS:/usr/local/data/DTI_Summer15/struct_atlas/atlas90-Parclabel_1year-Average-IBIS.nrrd
+T1:/usr/local/data/DTI_Summer15/struct_atlas/1year-Average-IBIS-MNI-t1w.nrrd
+T2:/usr/local/data/DTI_Summer15/struct_atlas/1year-Average-IBIS-MNI-t2w.nrrd
+SubjectFolder:/home/workstation2/Documents
+SubjectList:/home/workstation2/git/NIRAL_DTI_PIPELINE/example_config/subjects.txt
