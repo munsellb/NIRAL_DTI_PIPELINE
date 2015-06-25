@@ -87,7 +87,7 @@ if subject_folder[len(subject_folder)-1] != '/':
 
 arguments["RD"] = subject_folder + arguments["RD"]
 
-os.system("mkdir registration")
+os.system("mkdir "+subject_folder+"registration")
 
 arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
 #running ANTS

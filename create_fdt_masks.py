@@ -23,7 +23,7 @@
 #  
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 7		
+NUM_PARAMETERS = 8		
 slash = "/"
 import sys
 import os
@@ -70,7 +70,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["ATLAS", "FAVolume", "BrainMask", "RegionVolume", "config", "outputWaypoint", "outputTermination", "outputExclusion"]
+arguments_names = ["SubjectFolder", "ATLAS", "FAVolume", "BrainMask", "RegionVolume", "config", "outputWaypoint", "outputTermination", "outputExclusion"]
 
 checkParameters(arguments, arguments_names)
 
@@ -96,6 +96,18 @@ for i in range(0, NUM_PARAMETERS):
 
 checkParameters(arguments, arguments_names)
 print arguments
+
+subject_folder = arguments["SubjectFolder"]
+
+if subject_folder[len(subject_folder)-1] != '/':
+  subject_folder=subject_folder + "/"
+  
+arguments["FAVolume"] = subject_folder + arguments["FAVolume"]
+arguments["BrainMask"] = subject_folder + arguments["BrainMask"]
+arguments["RegionVolume"] = subject_folder + arguments["RegionVolume"]
+arguments["outputWaypoint"] = subject_folder + arguments["outputWaypoint"]
+arguments["outputExclusion"] = subject_folder + arguments["outputExclusion"]
+arguments["outputTermination"] = subject_folder + arguments["outputTermination"]
 
 os.system("ImageMath "+arguments["FAVolume"]+" -threshold 0.15,1.0 -outfile "+arguments["outputWaypoint"])
 outputBinaryHalfInvertedMask = arguments["RegionVolume"]
