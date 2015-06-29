@@ -20,8 +20,9 @@ def checkParameters(parameters, valid_ones):
 			exit(-1)
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
-	print "This script creates Exclusion, Termination and Waypoint Masks"
-	print "Syntax to run this script: create_fdt_masks.py -config config_filename"
+	print ""
+	print "------This script does the registration of the current Subject------"
+	print "Syntax to run this script: python nonrigid_registration.py -config config_filename"
 	print ""
 	print "The config file requires the following format:"
 	print "RD:RD_DIRECTORY"
@@ -29,6 +30,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
 	print "T2:T2_DIRECTORY"
 	print "ATLAS:ATLAS_DIRECTORY"
 	print "OUT_ANTS_PREFIX:OUT_ANTS_PREFIX -> a prefix name for the output files"
+	print ""
 	exit(0)
 		
 print "Num of arguments passed:",len(sys.argv) -1

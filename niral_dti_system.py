@@ -93,13 +93,17 @@ def checkParameters(parameters, valid_ones):
 			exit(-1)
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
-	print "This script creates an RD File from a brain volume"
-	print "Syntax to run this script: dwi_to_rd.py -config config_filename"
+	print ""
+	print "------This is the main script of the pipeline------"
+	print "Syntax to run this script: python niral_dti_system.py -config config_global_system.txt "
 	print ""
 	print "The config file requires the following format:"
-	print "DWIVolume:DWIVolume_DIRECTORY"
-	print "outputRD:outputRD_DIRECTORY"
-	print "Mask:Mask_DIRECTORY"
+	print "ATLAS:location of the ATLAS file"
+	print "T1:location of the T1 file"
+	print "T2:location of the T2 file"
+	print "SubjectFolder:SubjectFolder_Directory"
+	print "SubjectList:SubjectList file location"
+	print ""
 	exit(0)
 
 		
