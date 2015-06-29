@@ -33,16 +33,27 @@
 <p>Scripts required to run this pipeline:</p>
 
 <ul>
+<li>niral_dti_system.py</li>
 <li>dwi_to_dti.py</li>
 <li>nonrigid_registration.py</li>
-<li>wap_image.py</li>
+<li>warp_image.py</li>
 <li>fdt_bedpost.py</li>
 <li>extract_brain_region.py</li>
 <li>create_fdt_masks.py</li>
 <li>fdt_probtrackx2.py</li>
 </ul>
 
-<p>You must have a config folder in which all of the config files will be placed</p>
+<p>It is possible to run each of these scripts separately. Use the helper to get more information.
+*example: python warp_image.py --help</p>
+
+<p>Other files required:</p>
+
+<ul>
+<li>subjects.txt - It is a list file that contains in each line a path that points to a subject folder</li>
+<li>config_global_system.txt - this is the config file required in order to run he niral_sti_system.py script</li>
+</ul>
+
+<p>List of software required:</p>
       </section>
     </div>
     <footer>
