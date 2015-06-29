@@ -165,6 +165,8 @@ for subject in f.readlines():
   current_subject_files  = os.listdir( current_subject_folder ) 
   #createInvariableConfigFiles(current_subject_folder, arguments)
   
+  output_config_folder = current_subject_folder+"config"
+  os.system("mkdir "+output_config_folder)
   #createConfigFile(current_subject_folder+"config/config_dwi_to_dti.txt", {"Mask":findBrainMask(current_subject_files), "DWIVolume":findDWI(current_subject_files), "SubjectFolder":current_subject_folder})
   #print "Running DWI to DTI script:"
   #os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt")
@@ -178,24 +180,24 @@ for subject in f.readlines():
   #print "Running Warp Image script:"
   #os.system("python warp_image.py -config "+current_subject_folder+"config/config_warp_image.txt")
   
-  #createConfigFile(current_subject_folder+"config/config_bedpost.txt", {"INPUT_VOL":findDWI(current_subject_files), "INPUT_MASK":findBrainMask(current_subject_files), "SubjectFolder":current_subject_folder})
-  #print "Running Bedpost script:"
-  #os.system("python fdt_bedpost.py -config "+current_subject_folder+"config/config_bedpost.txt")
+  createConfigFile(current_subject_folder+"config/config_bedpost.txt", {"INPUT_VOL":findDWI(current_subject_files), "INPUT_MASK":findBrainMask(current_subject_files), "SubjectFolder":current_subject_folder})
+  print "Running Bedpost script:"
+  os.system("python fdt_bedpost.py -config "+current_subject_folder+"config/config_bedpost.txt")
   
   warped_atlas = arguments["ATLAS"][:arguments["ATLAS"].find(".")] + "_deform.nii.gz"
+  warped_atlas = warped_atlas[warped_atlas.rfind("/"):]
   
-  for i in range(1,2):
+  for i in range(1,2):   
     
+    #print "Extracting region " + str(i)
+    #createConfigFile(current_subject_folder+"config/config_extract_regions.txt", {"INPUT_IMAGE":warped_atlas, "EXTRACT_LABEL":str(i), "SubjectFolder":current_subject_folder})
+    #os.system("python extract_brain_region.py -config "+current_subject_folder+"config/config_extract_regions.txt")
     
-    print "Extracting region " + str(i)
-    createConfigFile(current_subject_folder+"config/config_extract_regions.txt", {"INPUT_IMAGE":warped_atlas, "EXTRACT_LABEL":str(i), "SubjectFolder":current_subject_folder})
-    os.system("python extract_brain_region.py -config "+current_subject_folder+"config/config_extract_regions.txt")
-    
-    print "Running FDT Masks script on region " + str(i)
-    createConfigFile(current_subject_folder+"config/config_create_fdt_masks.txt", {"SubjectFolder":current_subject_folder, "FAVolume":findFA(current_subject_files), "RDVolume":findRD(current_subject_files), "BrainMask":findBrainMask(current_subject_files), "region_label":str(i) })
-    os.system("python create_fdt_masks.py -config "+current_subject_folder+"config/config_create_fdt_masks.txt")
+    #print "Running FDT Masks script on region " + str(i)
+    #createConfigFile(current_subject_folder+"config/config_create_fdt_masks.txt", {"SubjectFolder":current_subject_folder, "FAVolume":findFA(current_subject_files), "RDVolume":findRD(current_subject_files), "BrainMask":findBrainMask(current_subject_files), "region_label":str(i) })
+    #os.system("python create_fdt_masks.py -config "+current_subject_folder+"config/config_create_fdt_masks.txt")
     
     print "Running Probtrack script on region " + str(i)
     createConfigFile(current_subject_folder+"config/config_probtrack.txt", {"SEEDFILE":"regions/"+"brain"+str(i)+".nii.gz", "WAYPOINTS":"masks/waypoint.nii.gz", "TERMINATIONMASK":"masks/termination.nii.gz", "EXCLUSIONMASK":"masks/exclusion.nii.gz", "SubjectFolder":current_subject_folder })
-    #os.system("python fdt_probtrackx2.py -config "+current_subject_folder+"config/config_probtrack.txt")
+    os.system("python fdt_probtrackx2.py -config "+current_subject_folder+"config/config_probtrack.txt")
     
