@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
+# In order to run this script, the following software is required:
+# * Probtrackx2 (can be found on FSL)
+
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 5		
+NUM_PARAMETERS = 6		
 slash = "/"
 import sys
 import os
@@ -24,13 +27,13 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
   print "   "
-  print "BEDPOST:'point directory where the files will be placed'"
   print "WAYPOINTS:'point to the input volume file '"
   print "SEEDFILE:'point to the mask file'"
   print "TERMINATIONMASK:point to the termination mask file"
   print "EXCLUSIONMASK:point to the exclusion mask file"
   print "MASKFILE:'point to the file nodif_brain_mask.nii.gz that is located inside the bedpost's folder'"
-  print "OUTPUTPROBTRACK:'point directory where the files will be placed'"
+  print "OUTPUTFOLDER:'point directory where the files will be placed'"
+  print "SubjectFolder:'subject directory'"
   print "  "
   print "  "
  
@@ -64,7 +67,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder"]
+arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder","OUTFOLDER"]
 
 checkParameters(arguments, arguments_names)
 
@@ -105,8 +108,11 @@ os.system("mkdir " + output)
 
 waypoints_file = output+"waypoints.txt"
 
+seed_folder = arguments["SEEDFILE"][:arguments["SEEDFILE"].find('.')]
+
 create_file(waypoints_file, [arguments["WAYPOINTS"]])
-	
+
+# composing the command to run the probtrack	
 cmd = "probtrackx2 -x " + arguments["SEEDFILE"] + " -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 "
 
 cmd = cmd + "--avoid="+arguments["EXCLUSIONMASK"] + " "
@@ -117,7 +123,7 @@ cmd = cmd + "--forcedir --opd -s "+subject_folder + "dtiprep.bedpostX/merged "
 
 cmd = cmd + "-m "+subject_folder + "dtiprep.bedpostX/nodif_brain_mask "
 
-cmd = cmd + "--dir="+subject_folder + "probtrack "
+cmd = cmd + "--dir="+subject_folder + "probtrack/" + arguments["OUTPUTFOLDER"] + " "
 
 cmd = cmd + "--waypoints="+waypoints_file+" --waycond=AND"
 

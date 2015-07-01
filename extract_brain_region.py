@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 #__author__ = 'JESSEROCHA'
 
+# In order to run this script, the following software is required:
+# * ImageMath
+
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = 3
 slash = "/"
@@ -10,13 +13,14 @@ arguments = {}
 
 if len(sys.argv) > 1 and sys.argv[1] == "-- help":
   print ""
-  print "--------This is the extract_brain_region script--------"
+  print "------ Extract Brain Region Script - Extracts a single region of the brain ------"
   print "The sintax to run the script: extract_brain_region.py -conf 'config_file_name.txt'"
-  print "Example: extract_brain_region.py -conf 'configRegions.txt' "
+  print "Example: extract_brain_region.py -config 'configRegions.txt' "
+  print ""
   print "------------------------------------------------------------"
   print "------- This is how the config file must look like: -------- "
   print "   "
-  print "SubjectFolder: 'A directory that contains image data for an unique subject'"
+  print "SubjectFolder: Path where the subject folder is located"
   print "INPUT_IMAGE: 'Warped structural atlas located in SubjectFolder/registration'"
   print "EXTRACT_LABEL:'Label number to extract. The output file is named \"brain<EXTRACT_LABEL>.nii.gz\" and will be located in SubjectFolder/regions'"
   print "  "
@@ -76,13 +80,14 @@ for i in range(0,len(lines)):
 	tokens = lines[i].rstrip().split(':')
 	arguments[tokens[0]] = tokens[1]
 
-#checking
+#checking parameters
 
 checkParameters(arguments, arguments_names)
 print arguments
 
 subject_folder = arguments["SubjectFolder"]
 
+# putting a slash if the path doesn't have it
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
@@ -90,6 +95,7 @@ arguments["INPUT_IMAGE"] = subject_folder + "registration/" + arguments["INPUT_I
 
 os.system("mkdir "+subject_folder+"regions")
 output = subject_folder + "regions/brain" + arguments["EXTRACT_LABEL"] + ".nii.gz"
+
 #running ImageMath
 os.system("ImageMath " + arguments["INPUT_IMAGE"] + " -extractLabel " + arguments["EXTRACT_LABEL"] + " -outfile " + output )
 

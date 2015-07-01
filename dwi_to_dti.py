@@ -20,7 +20,9 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  
+#  # In order to run this script, the following software are required:
+#  * dtiestim
+#  * dtiprocess
 
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = 3		
@@ -41,7 +43,7 @@ def checkParameters(parameters, valid_ones):
 			exit(-1)
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
-	print "This script creates an RD File from a brain volume"
+	print "------ This script converts the DWI volume to the DTI space ------"
 	print "Syntax to run this script: dwi_to_rd.py -config config_filename"
 	print ""
 	print "The config file requires the following format:"
@@ -90,8 +92,7 @@ for i in range(0, NUM_PARAMETERS):
 	
 	arguments[tokens[0]] = tokens[1]
 
-#checking
-
+#checking paramters
 checkParameters(arguments, arguments_names)
 print arguments
 
@@ -103,15 +104,10 @@ if subject_folder[len(subject_folder)-1] != '/':
 for k in arguments.keys():
   arguments[k] = subject_folder + arguments[k]
 
-#all arguments were checked
 
 #running dtiestim
 outputDTIName = arguments["DWIVolume"]
   
-#if outputDTIName.find("DWI") != -1:
-	#outputDTIName = outputDTIName.replace("DWI", "DTI")
-#else:
-	#outputDTIName = outputDTIName.split(".")[0] + "_DTI" + "." + outputDTIName.split(".")[1]
 outputDTIName = outputDTIName.split(".")[0] + "_DTI" + ".nii.gz"
 
 os.system("dtiestim -M "+arguments["Mask"]+" -m wls --correctionType nearest --inputDWIVolume "+arguments["DWIVolume"]+" --outputDTIVolume "+outputDTIName)	

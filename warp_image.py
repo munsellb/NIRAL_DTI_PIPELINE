@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # _AUTHOR_ _ARTHUR MEDEIROS_
 
+# In order to run this script, the following software is required:
+# * WarpImageMultiTransform (can be found in the BainTools package)
+
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = 4		
 slash = "/"
@@ -76,12 +79,10 @@ for i in range(0,len(lines)):
 		exit(-1)
 	tokens = lines[i].rstrip().split(':')
 	arguments[tokens[0]] = tokens[1]
-	
-	#ID_ARGS.append(split_str[0])
-	#NAME_ARGS.append(split_str[1])
 
 
-#checking
+
+#checking parameters
 
 checkParameters(arguments, arguments_names)
 print arguments_names
@@ -92,8 +93,9 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
-arguments["REF"] = subject_folder + arguments["REF"]  
+#arguments["REF"] = subject_folder + arguments["REF"]  
 
+# creating the registration folder
 os.system("mkdir registration")
 
 arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]

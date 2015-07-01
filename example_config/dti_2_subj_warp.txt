@@ -1,0 +1,4 @@
+REF:/home/workstation1/sandbox/Subjects/Subject4/subject4-1year_42_DWI-Trio_QCed_VC_Upx2_FA.nii.gz
+MOV:/home/workstation1/sandbox/global/struct_atlas/registration/atlas90-Parclabel_1year-Average-IBIS_deform.nii.gz
+OUT_ANTS_PREFIX:subject4-1year_42_DWI-Trio_ANTS_FA_
+SubjectFolder:/home/workstation1/sandbox/Subjects/Subject4

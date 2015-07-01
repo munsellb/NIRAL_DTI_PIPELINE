@@ -21,6 +21,10 @@
 #  MA 02110-1301, USA.
 #  
 #  
+# In order to run this script, the following software are required:
+# * convertITKFormats (can be found on niral_utilities package)
+# * DWI Convert (can be found on Slicer)
+# * Bedpost (can be found on FSL)
 
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = 3		
@@ -113,18 +117,28 @@ for k in arguments.keys():
 
 dtiprep_folder = subject_folder + "dtiprep/"
 
+#creating a folder called dtiprep inside the folder. This folder will contain the files required to run the bedpost
 os.system("mkdir " + dtiprep_folder)
 
+# these are going to be the name of the files
 outputVolName = dtiprep_folder + "data.nii.gz"
 outputBVec = dtiprep_folder + "bvecs"
 outputBVal = dtiprep_folder + "bvals"
 outputMask = dtiprep_folder + "nodif_brain_mask.nii.gz"
 
+# Runnin the DWI Convert
 print("Running DWIConvert")
 os.system("DWIConvert --inputVolume "+arguments["INPUT_VOL"]+" --outputVolume "+outputVolName+" --conversionMode NrrdToFSL --outputBVectors "+outputBVec+" --outputBValues "+outputBVal)
+# Parsing bvals file from column format to line format (required by bedpost) 
 print("Running sed")
 os.system("sed -i ':a;N;$!ba;s/\\n/ /g' "+outputBVal)		#replacing '/n' for ' '
+#Running ITK formats
 print("Running ITKFromats")
 os.system("convertITKformats "+arguments["INPUT_MASK"]+" "+outputMask)
+# Runnin Bedpost
 print("Running BEDPOST")
-os.system("bedpostx "+dtiprep_folder+" -n 2 -model 2")
+
+cmd = "bedpostx "+dtiprep_folder+" -n 2 -model 2"
+print "cmd=", cmd
+
+os.system( cmd )

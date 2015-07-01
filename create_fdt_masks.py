@@ -21,6 +21,9 @@
 #  MA 02110-1301, USA.
 #  
 #  
+# In order to run this script, the following software is required:
+# * ImageMath
+
 
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = 5		
@@ -107,29 +110,35 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
+  
 mask_folder = subject_folder + "masks/"
 region_folder = subject_folder + "regions/"
 registration_folder = subject_folder + "registration/"
 
+# Creating the masks folder to save the mask files created by this script
 os.system("mkdir "+ mask_folder)
 
+# These variables are set to be the names of the outfiles
 arguments["FAVolume"] = subject_folder + arguments["FAVolume"]
 arguments["RDVolume"] = subject_folder + arguments["RDVolume"]
 arguments["BrainMask"] = subject_folder + arguments["BrainMask"]
 region_mask = region_folder + "brain" + arguments["region_label"] + ".nii.gz"
+# waypoints mask
 waypoint_mask = mask_folder + "waypoint.nii.gz"
+# exclusion mask
 exclusion_mask = mask_folder + "exclusion.nii.gz"
+# termination mask
 termination_mask = mask_folder + "termination.nii.gz"
+# rd threshold
 rd_threshold_mask = mask_folder + "rdthresh.nii.gz"
 deformed_struct_atlas = registration_folder + findATLAS(os.listdir(registration_folder))
 
 # -------------------------------------------------------------
-# creating waypoint mask
-
+# creating the waypoint mask
 os.system("ImageMath "+arguments["FAVolume"]+" -threshold 0.15,1.0 -outfile "+waypoint_mask)
 
 # -------------------------------------------------------------
-# creating termination mask
+# creating the termination mask
 outputBinaryHalfInvertedMask = region_mask
 outputBinaryHalfInvertedMask = outputBinaryHalfInvertedMask.split(".")[0] + "_Binary_Half_Inv_Mask" + outputBinaryHalfInvertedMask[outputBinaryHalfInvertedMask.index("."):]
 
@@ -143,7 +152,7 @@ os.system("ImageMath "+deformed_struct_atlas+" -mask "+outputBinaryInvertedMask+
 os.system("ImageMath "+termination_mask+" -erode 2,1"+" -outfile "+termination_mask)
 
 # -------------------------------------------------------------
-# creating exclusion mask
+# creating the exclusion mask
 outputBinaryHalfInvertedBrainMask = arguments["BrainMask"]
 outputBinaryHalfInvertedBrainMask = outputBinaryHalfInvertedBrainMask.split(".")[0] + "_Binary_Half_Inv_Brain_Mask" + outputBinaryHalfInvertedBrainMask[outputBinaryHalfInvertedBrainMask.index("."):]
 
