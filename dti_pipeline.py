@@ -33,7 +33,7 @@ arguments = {}
 # this function is going to try to find a file that contains 'DWI' on its name
 def findDWI(files):
   for f in files:
-    if (f.find("DWI") != -1 and f.find("stripped") == -1):
+    if (f.find("DWI") != -1 and f.find("stripped") == -1 and f.find("RD") == -1 and f.find("FA") == -1 and f.find("DTI") == -1 and f.find("RA") == -1 and f.find("MD") == -1 ):
       return f
     
   return None
@@ -167,7 +167,9 @@ for subject in f.readlines():
   # Calling the script that transforms the DWI in the DTI space
   createConfigFile(current_subject_folder+"config/config_dwi_to_dti.txt", {"Mask":findBrainMask(current_subject_files), "DWIVolume":findDWI(current_subject_files), "SubjectFolder":current_subject_folder})
   print "Running DWI to DTI script:"
-  os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt")
+  
+  if os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt") != 0:
+    exit(-1)
   
   current_subject_files  = os.listdir( current_subject_folder ) 
   
