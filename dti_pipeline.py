@@ -24,11 +24,16 @@
 
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 5		
+NUM_PARAMETERS = 6
+FLAG_PARAMETERS = 6
 slash = "/"
 import sys
 import os
 arguments = {}
+flag_arguments = {}
+
+
+
 
 # this function is going to try to find a file that contains 'DWI' on its name
 def findDWI(files):
@@ -102,6 +107,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
 		
 print "Num of arguments passed:",len(sys.argv) -1
 
+
 # Error message in case of using wrong numbers of parameters
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
@@ -138,7 +144,38 @@ for i in range(0, NUM_PARAMETERS):
 
 
 # This is the dictionary. These names, except for 'config', must be in the config file
-arguments_names = ["T1", "config", "T2", "ATLAS", "SubjectFolder", "SubjectList"]
+arguments_names = ["T1", "config", "T2", "ATLAS", "SubjectFolder", "SubjectList","flags"]
+
+## the next *** lines below are related to the flag file that says what scripts will run 
+flag_names = ["dwi_to_dti","inv_warp_image","fdt_bedpost","extract_brain_region","create_fdt_masks","fdt_probtrackx2"]
+
+flag_file = open(arguments["flags"])
+
+f_lines = flag_file.readlines()
+if len(f_lines) != FLAG_PARAMETERS:
+  print "ERROR: the flag file must contain only ",FLAG_PARAMETERS," parameters"
+  print "Type --help for more information"
+  exit(-1)
+
+for g in range(0, FLAG_PARAMETERS):
+	if f_lines[g].find(":") == -1:
+		print "ERROR: The line",g+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE"
+		print "ACCEPTABLE VALUES: YES or NO"
+		print "For more information use --help"
+		exit(-1)
+	tokens_2 = f_lines[g].rstrip().split(":")
+	
+	if tokens_2[1] != "yes" and tokens_2[1] != "no":
+	  exit(-1)
+	  print "Flag could not find the correct values."
+		
+	flag_arguments[tokens_2[0]] = tokens_2[1]
+	
+checkParameters(flag_arguments,flag_names)	
+
+###
+
+
 
 checkParameters(arguments, arguments_names)
 
@@ -164,46 +201,81 @@ for subject in f.readlines():
   output_config_folder = current_subject_folder+"config"
   os.system("mkdir "+output_config_folder)
   
-  # Calling the script that transforms the DWI in the DTI space
-  createConfigFile(current_subject_folder+"config/config_dwi_to_dti.txt", {"Mask":findBrainMask(current_subject_files), "DWIVolume":findDWI(current_subject_files), "SubjectFolder":current_subject_folder})
-  print "Running DWI to DTI script:"
+  if flag_arguments["dwi_to_dti"] == "yes":
+    # Calling the script that transforms the DWI in the DTI space
+    createConfigFile(current_subject_folder+"config/config_dwi_to_dti.txt", {"Mask":findBrainMask(current_subject_files), 
+      "DWIVolume":findDWI(current_subject_files), "SubjectFolder":current_subject_folder})
+    print "Running DWI to DTI script:"
   
-  if os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt") != 0:
-    exit(-1)
+    if os.system("python dwi_to_dti.py -config "+current_subject_folder+"config/config_dwi_to_dti.txt") != 0:
+      print "the dwi_to_dti.py script has failed!"
+      exit(-1)
+  elif flag_arguments["dwi_to_dti"] == "no":
+     print "The dwi_to_dti script will not run. It was canceled in the flag file!!"
   
   current_subject_files  = os.listdir( current_subject_folder ) 
   
   OUT_ANTS_PREFIX = findFA( current_subject_files )
   OUT_ANTS_PREFIX = OUT_ANTS_PREFIX[ :OUT_ANTS_PREFIX.rfind("Trio")+4 ] + "_ANTS_FA_"
   
-  # Applying the registration to the Subject 
-  createConfigFile(current_subject_folder+"config/config_inv_warp_image.txt", {"REF":findFA(current_subject_files),"MOV":arguments["ATLAS"],"OUT_ANTS_PREFIX":OUT_ANTS_PREFIX,"SubjectFolder":current_subject_folder})
-  print "Running Warp Image script:"
-  os.system("python inv_warp_image.py -config "+current_subject_folder+"config/config_inv_warp_image.txt")
+  if flag_arguments["inv_warp_image"] == "yes":
+    # Applying the registration to the Subject 
+    createConfigFile(current_subject_folder+"config/config_inv_warp_image.txt", {"REF":findFA(current_subject_files),
+      "MOV":arguments["ATLAS"],"OUT_ANTS_PREFIX":OUT_ANTS_PREFIX,"SubjectFolder":current_subject_folder})
+    print "Running Warp Image script:"
+    if os.system("python inv_warp_image.py -config "+current_subject_folder+"config/config_inv_warp_image.txt") != 0:
+      print "the inv_warp_image.py script has failed!"
+      exit(-1)
+  elif flag_arguments["inv_warp_image"] == "no":
+      print "the inv_warp_image script will not run. It was canceled in the flag file!!"
   
-  # Running the bedpost script
-  createConfigFile(current_subject_folder+"config/config_bedpost.txt", {"INPUT_VOL":findDWI(current_subject_files), "INPUT_MASK":findBrainMask(current_subject_files), "SubjectFolder":current_subject_folder})
-  print "Running Bedpost script:"
-  os.system("python fdt_bedpost.py -config "+current_subject_folder+"config/config_bedpost.txt")
+  
+  if flag_arguments["fdt_bedpost"] == "yes":
+    # Running the bedpost script
+    createConfigFile(current_subject_folder+"config/config_bedpost.txt", {"INPUT_VOL":findDWI(current_subject_files), 
+      "INPUT_MASK":findBrainMask(current_subject_files), "SubjectFolder":current_subject_folder})
+    print "Running Bedpost script:"
+    if os.system("python fdt_bedpost.py -config "+current_subject_folder+"config/config_bedpost.txt") != 0:
+      print "the fdt_bedpost.py script has failed!"
+      exit(-1)
+  elif flag_arguments["fdt_bedpost"] == "no":
+    print "The fdt_bedpost script will not run. It was canceled in the flag file!"
   
   warped_atlas = arguments["ATLAS"][:arguments["ATLAS"].find(".")] + "_deform.nii.gz"
   warped_atlas = warped_atlas[warped_atlas.rfind("/"):]
   
   # loop that runs 90 times to extract all the brain regions
-  for i in range(1,91):   
+  for i in range(1,2):   
     
-    # extracting a brain region
-    print "Extracting region " + str(i)
-    createConfigFile(current_subject_folder+"config/config_extract_regions.txt", {"INPUT_IMAGE":warped_atlas, "EXTRACT_LABEL":str(i), "SubjectFolder":current_subject_folder})
-    os.system("python extract_brain_region.py -config "+current_subject_folder+"config/config_extract_regions.txt")
+    if flag_arguments["extract_brain_region"] == "yes":
+      # extracting a brain region
+      print "Extracting region " + str(i)
+      createConfigFile(current_subject_folder+"config/config_extract_regions.txt", {"INPUT_IMAGE":warped_atlas, 
+        "EXTRACT_LABEL":str(i), "SubjectFolder":current_subject_folder})
+      if os.system("python extract_brain_region.py -config "+current_subject_folder+"config/config_extract_regions.txt") != 0:
+	print "the extract_brain_region.py script has failed!"
+	exit(-1)
     
-    # creating the masks necessary to run the probtrack
-    print "Running FDT Masks script on region " + str(i)
-    createConfigFile(current_subject_folder+"config/config_create_fdt_masks.txt", {"SubjectFolder":current_subject_folder, "FAVolume":findFA(current_subject_files), "RDVolume":findRD(current_subject_files), "BrainMask":findBrainMask(current_subject_files), "region_label":str(i) })
-    os.system("python create_fdt_masks.py -config "+current_subject_folder+"config/config_create_fdt_masks.txt")
     
-    # calling the probtrack script 
-    print "Running Probtrack script on region " + str(i)
-    createConfigFile(current_subject_folder+"config/config_probtrack.txt", {"OUTPUTFOLDER":str(i), "SEEDFILE":"regions/"+"brain"+str(i)+".nii.gz", "WAYPOINTS":"masks/waypoint.nii.gz", "TERMINATIONMASK":"masks/termination.nii.gz", "EXCLUSIONMASK":"masks/exclusion.nii.gz", "SubjectFolder":current_subject_folder })
-    os.system("python fdt_probtrackx2.py -config "+current_subject_folder+"config/config_probtrack.txt")
+    if flag_arguments["create_fdt_masks"] == "yes":
+      # creating the masks necessary to run the probtrack
+      print "Running FDT Masks script on region " + str(i)
+      createConfigFile(current_subject_folder+"config/config_create_fdt_masks.txt", {"SubjectFolder":current_subject_folder, 
+        "FAVolume":findFA(current_subject_files), "RDVolume":findRD(current_subject_files), 
+        "BrainMask":findBrainMask(current_subject_files), "region_label":str(i) })
+      if os.system("python create_fdt_masks.py -config "+current_subject_folder+"config/config_create_fdt_masks.txt") != 0:
+	print "the create_fdt_masks.py script has failed!"
+	exit(-1)
+    
+	
+    if flag_arguments["fdt_probtrackx2"] == "yes":
+      # calling the probtrack script 
+      print "Running Probtrack script on region " + str(i)
+      createConfigFile(current_subject_folder+"config/config_probtrack.txt", {"OUTPUTFOLDER":str(i), 
+        "SEEDFILE":"regions/"+"brain"+str(i)+".nii.gz", "WAYPOINTS":"masks/waypoint.nii.gz", 
+        "TERMINATIONMASK":"masks/termination.nii.gz", "EXCLUSIONMASK":"masks/exclusion.nii.gz", 
+        "SubjectFolder":current_subject_folder, "ATLAS":"registration" + warped_atlas })
+      if os.system("python fdt_probtrackx2.py -config "+current_subject_folder+"config/config_probtrack.txt") != 0:
+	print "the fdt_probtrackx2.py script has failed!"
+	exit(-1)
     

@@ -3,3 +3,4 @@ T1:/home/workstation1/sandbox/global/struct_atlas/1year-Average-IBIS-MNI-t1w.nrr
 T2:/home/workstation1/sandbox/global/struct_atlas/1year-Average-IBIS-MNI-t2w.nrrd
 SubjectFolder:/home/workstation1/sandbox/Subjects
 SubjectList:/home/workstation1/sandbox/Subjects/subjects.txt
+flags:/home/workstation1/sandbox/Subjects/flags.txt

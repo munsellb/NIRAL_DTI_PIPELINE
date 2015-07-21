@@ -96,7 +96,7 @@ if subject_folder[len(subject_folder)-1] != '/':
 arguments["REF"] = subject_folder + arguments["REF"]  
 
 # creating the registration folder
-os.system("mkdir registration") // TODO: FIX ME!
+os.system("mkdir "+subject_folder+"registration/") #// TODO: FIX ME!
 
 arguments["OUT_ANTS_PREFIX"]=subject_folder + "registration/" + arguments["OUT_ANTS_PREFIX"]
 output = subject_folder + "registration/" + arguments["MOV"][arguments["MOV"].rfind("/")+1:]

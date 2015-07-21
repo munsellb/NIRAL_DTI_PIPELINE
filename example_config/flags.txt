@@ -1,0 +1,6 @@
+dwi_to_dti:yes
+inv_warp_image:yes
+fdt_bedpost:yes
+extract_brain_region:yes
+create_fdt_masks:yes
+fdt_probtrackx2:yes

@@ -5,10 +5,12 @@
 # * Probtrackx2 (can be found on FSL)
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = 6		
+NUM_PARAMETERS = 7		
 slash = "/"
 import sys
 import os
+import csv
+
 arguments = {}
 
 def create_file(filename, content):
@@ -34,7 +36,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "MASKFILE:'point to the file nodif_brain_mask.nii.gz that is located inside the bedpost's folder'"
   print "OUTPUTFOLDER:'point directory where the files will be placed'"
   print "SubjectFolder:'subject directory'"
-  print "  "
+  print "ATLAS: 'deformed atlas' "
   print "  "
  
   exit(0)
@@ -49,6 +51,37 @@ def checkParameters(parameters, valid_ones):
 			print "ERROR:",parameters[k], "is not a valid parameter value for", k
 			print "Please type --help to get more information"
 			exit(-1)
+
+def gen_connectome( folder, seed_label ):
+	
+	f=open( folder + 'waytotal','r')
+	total = float(f.readline())
+	f.close()
+
+	#print "Total ", total
+
+	row_vec = []
+
+	f=open( folder + 'fdt_probtrackx_intensitySummary.csv','r')
+
+	for line in f:
+		tokens = line.split(",")
+  		print "length = ", len(tokens )
+  		if tokens[1] == 'MAX':
+  			row_vec=tokens[2:]
+	f.close()
+
+	row_vec[-1]=row_vec[-1].strip()
+	row_vec = map(float,row_vec)
+	row_vec_norm = [ x/total for x in row_vec ]
+	row_vec_norm[seed_label-1]=0.0
+
+	#print "row vec = ", row_vec_norm
+
+	f=open( folder + 'connectome.csv', 'w')
+	csvwriter = csv.writer( f )
+	csvwriter.writerow( row_vec_norm )
+	f.close()
 		
 print "Num of arguments passed:",len(sys.argv) -1
 
@@ -67,7 +100,7 @@ while i < len(sys.argv):
 print arguments
 print "working directory:",os.getcwd()
 
-arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder","OUTFOLDER"]
+arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder","OUTFOLDER", "ATLAS"]
 
 checkParameters(arguments, arguments_names)
 
@@ -95,9 +128,11 @@ subject_folder = arguments["SubjectFolder"]
 
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
+
   
 for k in arguments.keys():
-  arguments[k] = subject_folder + arguments[k]
+  if k != "OUTPUTFOLDER":
+    arguments[k] = subject_folder + arguments[k]
   
 output = subject_folder + "probtrack/"
 os.system("mkdir " + output)
@@ -112,10 +147,12 @@ seed_folder = arguments["SEEDFILE"][:arguments["SEEDFILE"].find('.')]
 
 create_file(waypoints_file, [arguments["WAYPOINTS"]])
 
-# composing the command to run the probtrack	
-cmd = "probtrackx2 -x " + arguments["SEEDFILE"] + " -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 "
+probtrackx_folder = output + arguments["OUTPUTFOLDER"] + "/"
 
-cmd = cmd + "--avoid="+arguments["EXCLUSIONMASK"] + " "
+# composing the command to run the probtrack	
+cmd = "probtrackx2 -V 2 -x " + arguments["SEEDFILE"] + " -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 "
+
+cmd = cmd + "--omatrix1 --avoid="+arguments["EXCLUSIONMASK"] + " "
 
 cmd = cmd + "--stop="+arguments["TERMINATIONMASK"] + " "
 
@@ -128,4 +165,11 @@ cmd = cmd + "--dir="+subject_folder + "probtrack/" + arguments["OUTPUTFOLDER"] +
 cmd = cmd + "--waypoints="+waypoints_file+" --waycond=AND"
 
 #os.system("probtrackx2 -x "+arguments["SEEDFILE"]+" -V 1 -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 --avoid="+arguments["EXCLUSIONMASK"]+" --stop="+arguments["TERMINATIONMASK"]+" --forcedir --opd -s "+arguments["BEDPOST"]+" -m "+arguments["MASKFILE"]+" --dir="+os.getcwd()+"/probtrack_test"+" --waypoints="+arguments["WAYPOINTS"]+" --waycond=AND")	
-os.system(cmd)
+#os.system(cmd)
+
+cmd = "ImageStat " + probtrackx_folder + "fdt_paths.nii.gz -label " + arguments["ATLAS"] + " -intensitySummary -outbase " + probtrackx_folder + "fdt_probtrackx"
+
+print "cmd ", cmd
+os.system( cmd )
+
+gen_connectome( probtrackx_folder, int( arguments["OUTPUTFOLDER"] ) )
