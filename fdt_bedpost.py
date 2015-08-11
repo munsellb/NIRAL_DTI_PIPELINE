@@ -3,8 +3,6 @@
 #
 #  run_bedpost.py
 #  
-#  Copyright 2015 Andy <Andy@ANDY-PC>
-#  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
@@ -109,8 +107,8 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
   
-for k in arguments.keys():
-  arguments[k] = subject_folder + arguments[k]	
+#for k in arguments.keys():
+#  arguments[k] = subject_folder + arguments[k]	
 	
 
 #all arguments were checked

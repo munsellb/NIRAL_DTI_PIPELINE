@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
 #
-#  fdt_probtrackx2.py
+#  atlas_registration.py
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,22 +21,24 @@
 #  In order to run this script, the following software applications 
 #  required:
 #  ----------------------------------------------------------------
-#  (1) probtrackx2
-#  (2) ImageStat
+#  (1) ANTS
+#  (2) WarpImageMultiTransform
 
 import sys
 import os
 import os.path
 import csv
+from shutil import copyfile
 
-arguments_names = ["config", "SEEDFILE", "WAYPOINTS","TERMINATIONMASK","EXCLUSIONMASK","SubjectFolder","OUTFOLDER", "ATLAS"]
+arguments_names = ["config", "SubjectFolder", "DWI_B0", "DWI_AD", "T1", "T2"]
 
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = len( arguments_names )	- 1
 slash = "/"
 arguments = {}
 
-debug = False
+debug=False
+
 
 # ----------------------------------------------
 # Function definitions
@@ -53,64 +55,25 @@ def checkParameters(parameters, valid_ones):
 			print "Please type --help to get more information"
 			exit(-1)
 
-def create_file(filename, content):
-	f = open(filename, "wt")
-	for c in content:
-		f.write(c + "\n")
-	f.close()
-
-def gen_connectome( folder, seed_label ):
-	
-	f=open( folder + 'waytotal','r')
-	total = float(f.readline())
-	f.close()
-
-	#print "Total ", total
-
-	row_vec = []
-
-	f=open( folder + 'fdt_probtrackx_intensitySummary.csv','r')
-
-	for line in f:
-		tokens = line.split(",")
-  		print "length = ", len(tokens )
-  		if tokens[1] == 'MAX':
-  			row_vec=tokens[2:]
-	f.close()
-
-	row_vec[-1]=row_vec[-1].strip()
-	row_vec = map(float,row_vec)
-	row_vec_norm = [ x/total for x in row_vec ]
-	row_vec_norm[seed_label-1]=0.0
-
-	#print "row vec = ", row_vec_norm
-
-	f=open( folder + 'connectome.csv', 'w')
-	csvwriter = csv.writer( f )
-	csvwriter.writerow( row_vec_norm )
-	f.close()
-
 # ----------------------------------------------
 # Display help option (--help) to user
 # ----------------------------------------------
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print "   "
-  print "--------- This is the FTD Probtrackx2 script ---------------"
+  print "--------- This is the atlas_registration script ---------------"
   print "  "
-  print "Sintax to run the script: ftd_probtrackx2.py -config 'config_file_name.txt'"
-  print "Example: ftd_probtrackx2.py -config config_probtrackx2.txt"
+  print "Syntax to run the script: atlas_registration.py -config 'config_file_name.txt'"
+  print "Example: atlas_registration.py -config config_atlas_registration.txt"
   print "   "
   print "------------------------------------------------------------"
   print "------- These key/value pairs must be defined in the config file -------- "
   print "   "
-  print "WAYPOINTS:'point to the input volume file '"
-  print "SEEDFILE:'point to the mask file'"
-  print "TERMINATIONMASK:point to the termination mask file"
-  print "EXCLUSIONMASK:point to the exclusion mask file"
-  print "OUTFOLDER:'point directory where the files will be placed'"
-  print "SubjectFolder:'subject directory'"
-  print "ATLAS: 'deformed gm atlas' "
+  print "SubjectFolder:'Subject Directory'"
+  print "DWI_B0:'DWI B0 image'"
+  print "DWI_AD:'DWI AD image'"
+  print "T1:'T1 image'"
+  print "T2:'T2 image'"
   print "  "
  
   exit(0)
@@ -118,7 +81,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
 # ----------------------------------------------
 # Basic command line parsing
 # ----------------------------------------------
-
+		
 if debug:
 	print "Num of arguments passed:",len(sys.argv) -1
 
@@ -142,10 +105,9 @@ if debug:
 checkParameters(arguments, arguments_names)
 
 # ----------------------------------------------
-# Config file parsing
+# Parse configuration file
 # ----------------------------------------------
 
-#reading config file and parsing its new parameters
 f = open(arguments["config"])
 
 lines = f.readlines()
@@ -172,62 +134,58 @@ subject_folder = arguments["SubjectFolder"]
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
 
-
 # ----------------------------------------------
-# folder variables
-# ----------------------------------------------
-
-output = subject_folder + "probtrack/"
-seed_folder = arguments["SEEDFILE"][:arguments["SEEDFILE"].find('.')]
-probtrackx_folder = output + arguments["OUTPUTFOLDER"] + "/"
-
-# ----------------------------------------------
-# file variables
+# make some folder variables
 # ----------------------------------------------
 
-waypoints_file = output+"waypoints.txt"
+registration_folder = subject_folder + "registration/"
+atlas_folder = subject_folder + "atlas/"
 
 # ----------------------------------------------
 # make some folders
 # ----------------------------------------------
-  
-if not os.path.isdir( output ):
-	os.makedirs( output )
 
-
-# ----------------------------------------------
-# Create the probtrack waypoint file
-# ----------------------------------------------
-
-create_file(waypoints_file, [arguments["WAYPOINTS"]])
+if not os.path.isdir( registration_folder ):
+	os.makedirs( registration_folder )
 
 # ----------------------------------------------
-# Execute probtrack 
-# ----------------------------------------------
-	
-cmd = "probtrackx2 -V 2 -x " + arguments["SEEDFILE"] + " -l --onewaycondition -c 0.2 -S 2000 --steplength=0.5 -P 5000 --fibthresh=0.01 --distthresh=0.0 --sampvox=0.0 "
-
-cmd = cmd + "--omatrix1 --avoid="+arguments["EXCLUSIONMASK"] + " "
-
-cmd = cmd + "--stop="+arguments["TERMINATIONMASK"] + " "
-
-cmd = cmd + "--forcedir --opd -s "+subject_folder + "dtiprep.bedpostX/merged "
-
-cmd = cmd + "-m "+subject_folder + "dtiprep.bedpostX/nodif_brain_mask "
-
-cmd = cmd + "--dir="+subject_folder + "probtrack/" + arguments["OUTPUTFOLDER"] + " "
-
-cmd = cmd + "--waypoints="+waypoints_file+" --waycond=AND"
-
-os.system(cmd)
-
-# ----------------------------------------------
-# Generate connectome data 
+# make some file variables
 # ----------------------------------------------
 
-cmd = "ImageStat " + probtrackx_folder + "fdt_paths.nii.gz -label " + arguments["ATLAS"] + " -intensitySummary -outbase " + probtrackx_folder + "fdt_probtrackx"
+outFileName = registration_folder + "t1t2_"
+warp = outFileName + "Warp.nii.gz"
+affine = outFileName + "Affine.txt"
 
-print "cmd ", cmd
+# ----------------------------------------------
+# execute non-rigid registration
+# ----------------------------------------------
+
+print "Performing joint T1,T2,b0,AD atlas registration"
+cmd="ANTS 3 -m CC\[" + arguments["DWI_B0"] + "," + arguments["T1"] + ",1,4\] -m MI\[" + arguments["DWI_AD"] + "," + arguments["T2"] + ",1,4\] -r Guass\[3,0\] -i 100x50x25 -t SyN\[0.25\] -o " + outFileName
 os.system( cmd )
 
-gen_connectome( probtrackx_folder, int( arguments["OUTPUTFOLDER"] ) )
+# ----------------------------------------------
+# execute subject specific atlas warps
+# ----------------------------------------------
+
+target = atlas_folder + "wm.nii.gz"
+target_out = atlas_folder + "wm_warp.nii.gz"
+
+cmd = "WarpImageMultiTransform 3 " + target + " " + target_out + " -R " + arguments["DWI_B0"] + " --use-NN " + warp + " " + affine
+print cmd
+os.system( cmd )
+
+target = atlas_folder + "final_gm.nii.gz"
+target_out = atlas_folder + "final_gm_warp.nii.gz"
+
+cmd = "WarpImageMultiTransform 3 " + target + " " + target_out + " -R " + arguments["DWI_B0"] + " --use-NN " + warp + " " + affine
+print cmd
+os.system( cmd )
+
+target = atlas_folder + "csf.nii.gz"
+target_out = atlas_folder + "csf_warp.nii.gz"
+
+cmd = "WarpImageMultiTransform 3 " + target + " " + target_out + " -R " + arguments["DWI_B0"] + " --use-NN " + warp + " " + affine
+print cmd
+os.system( cmd )
+

@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
 #
-#  dwi_to_dti.py
+#  connectome.py
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,33 +18,23 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  In order to run this script, the following software applications 
-#  required:
-#  ----------------------------------------------------------------
-#  (1) dtiestim
-#  (2) dtiprocess
+#  
 
 import sys
 import os
+import csv
+import numpy as np
 
-arguments_names = ["DWIVolume", "config", "SubjectFolder", "Mask"]
+arguments_names = ["config", "SubjectFolder"]
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = len( arguments_names )	- 1
+NUM_PARAMETERS = len( arguments_names ) - 1
+NUM_REGIONS=83	
 slash = "/"
 arguments = {}
 
 debug=False
 
-# -----------------------------------------------
-# UNC has an older version of dtiestim and 
-# dtiprocess that has where the naming convention 
-# of the command line parameters are slightly 
-# different
-
-is_unc = True
-
-# ----------------------------------------------
 
 # ----------------------------------------------
 # Function definitions
@@ -54,11 +44,11 @@ def checkParameters(parameters, valid_ones):
 	for k in parameters.keys():
 		if not (k in valid_ones):
 			print "ERROR:", k, "is not a valid paramater!"
-			print "For more information use --help"
+			print "Please type --help to get more information"
 			exit(-1)
 		if parameters[k][0] == '-':
 			print "ERROR:",parameters[k], "is not a valid parameter value for", k
-			print "For more information use --help"
+			print "Please type --help to get more information"
 			exit(-1)
 
 # ----------------------------------------------
@@ -66,31 +56,31 @@ def checkParameters(parameters, valid_ones):
 # ----------------------------------------------
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
-	print "   "
-  	print "-------- Convert DWI Volume to DTI Volume -------------------"
-  	print "   "
-  	print "Sintax to run the script: dwi_to_dti.py -config 'config_file_name.txt'"
-  	print "Example: dwi_to_dti.py -config config_dwi_to_dti.txt"
-  	print "   "
-  	print "------------------------------------------------------------"
-  	print "------- These key/value pairs must be defined in the config file -------- "
-  	print "   "
-	print "The config file requires the following format:"
-	print "DWIVolume: DWI image"
-	print "SubjectFolder: folder containing subject specific files"
-	print "Mask: brain mask"
-	exit(0)
+  print "   "
+  print "-------- Subject specific connectome creation script -------------------"
+  print "   "
+  print "Sintax to run the script: connectome.py -config 'config_file_name.txt'"
+  print "Example: connectome.py -config connectome.txt"
+  print "   "
+  print "------------------------------------------------------------"
+  print "------- These key/value pairs must be defined in the config file -------- "
+  print "   "
+  print "SubjectFolder:'Subject Directory'"
+  print "  "
+ 
+  exit(0)
 
 # ----------------------------------------------
 # Basic command line parsing
 # ----------------------------------------------
-
+		
 if debug:
 	print "Num of arguments passed:",len(sys.argv) -1
 
 if len(sys.argv)-1 != NUM_ARGUMENTS*2:
 	print "ERROR: You must pass only",NUM_ARGUMENTS*2,"arguments!"
-	print "For more information use --help"
+	print "Please type --help to get more information"
+	
 	exit(-1)
 
 i = 1
@@ -108,7 +98,7 @@ if debug:
 checkParameters(arguments, arguments_names)
 
 # ----------------------------------------------
-# Parse configuration file
+# Config file parsing
 # ----------------------------------------------
 
 f = open(arguments["config"])
@@ -116,19 +106,17 @@ f = open(arguments["config"])
 lines = f.readlines()
 if len(lines) != NUM_PARAMETERS:
 	print "ERROR: the config file should only contain",NUM_PARAMETERS,"parameters"
-	print "For more information use --help"
 	exit(-1)
 	
 for i in range(0, NUM_PARAMETERS):
 	if lines[i].find(":") == -1:
 		print "ERROR: The line",i+1,"of the config file is wrong formatted! Format should be PARAMETER:VALUE"
-		print "For more information use --help"
+		print "Please type --help to get more information"
 		exit(-1)
 	tokens = lines[i].rstrip().split(":")
 	
 	arguments[tokens[0]] = tokens[1]
 
-#checking paramters
 checkParameters(arguments, arguments_names)
 
 if debug:
@@ -137,70 +125,75 @@ if debug:
 # ----------------------------------------------
 # Define subject folder (and associated files)
 # ----------------------------------------------
-
+	
 subject_folder = arguments["SubjectFolder"]
 
 if subject_folder[len(subject_folder)-1] != '/':
   subject_folder=subject_folder + "/"
-  
-for k in arguments.keys():
-  arguments[k] = subject_folder + arguments[k]
 
 # ----------------------------------------------
-# Create some variables for dtiestim
+# Create some variables
 # ----------------------------------------------
 
-outputDTIName = arguments["DWIVolume"]
-outputDTIB0Name = arguments["DWIVolume"]
-outputB0Name = arguments["DWIVolume"]
-  
-outputDTIName = outputDTIName.split(".")[0] + "_DTI" + ".nii.gz"
-outputB0Name = outputB0Name.split(".")[0] + "_b0" + ".nii.gz"
-outputDTIB0Name = outputDTIB0Name.split(".")[0] + "_b0dti" + ".nii.gz"
-
-cmd = ""
+connectome_file = subject_folder+"connectome.csv"
 
 # ----------------------------------------------
-# Execute dtiestim
+# Create an connectome filled with zeros
 # ----------------------------------------------
 
-if not is_unc:
-	cmd = "dtiestim -M "+arguments["Mask"]+" -m wls --correctionType nearest --inputDWIVolume "+arguments["DWIVolume"]+" --outputDTIVolume "+outputDTIName
-else:
-	cmd = "dtiestim -M "+arguments["Mask"]+" -m wls --correction nearest --dwi_image "+arguments["DWIVolume"]+" --tensor_output "+outputDTIName
-
-os.system( cmd )
-
-cmd = ""
-
-if not is_unc:
-	cmd = "dtiestim --inputDWIVolume " + arguments["DWIVolume"] + " --B0 " + outputB0Name + " --tensor_output " + outputDTIB0Name
-else:
-	cmd = "dtiestim --dwi_image " + arguments["DWIVolume"] + " --B0 " + outputB0Name + " --tensor_output " + outputDTIB0Name
-
-os.system( cmd )
+C=np.zeros(shape=(NUM_REGIONS,NUM_REGIONS))
 
 # ----------------------------------------------
-# Create some variables for dtiprocess
+# Create seed matrix used to hold the connectivity
+# data of each seed
 # ----------------------------------------------
 
-outputFAName = outputDTIName.replace("DTI", "FA")
-outputRDName = outputDTIName.replace("DTI", "RD")
-outputADName = outputDTIName.replace("DTI", "AD")
+seed_matrix=[]
 
 # ----------------------------------------------
-# Execute dtiprocess
+# Loop through each seed and add connectivity 
+# data to seed_matrix (i.e. row 0 in seed matrix => seed region 1)
 # ----------------------------------------------
 
-if not is_unc:
-	cmd = "dtiprocess --dti_image "+outputDTIName+" --RD_output "+outputRDName+" --fa_output "+outputFAName+" --lambda1_output " + outputADName + " --saveScalarsAsFloat"
-else:
-	cmd = "dtiprocess --dti_image "+outputDTIName+" --RD_output "+outputRDName+" --fa_output "+outputFAName+" --lambda1_output " + outputADName + " --scalar_float"
+for i in range(0,NUM_REGIONS):
 
-os.system( cmd )
+	c_file=subject_folder+"probtrack/"+str(i+1)+"/connectome.csv"
+
+	f=open(c_file,"r")
+
+	for row in csv.reader(f):
+
+		seed_matrix.append( map( float, row ) )
+
+	f.close()
 
 # ----------------------------------------------
-# Remove unnecessary files
+# Create the connectome using connectivity data
+# in seed_matrix
 # ----------------------------------------------
 
-os.system( "rm " + outputDTIB0Name )
+for i in range(0,NUM_REGIONS):
+
+	if debug:
+		print seed_matrix[i][0:NUM_REGIONS]
+
+	for j in range(0,NUM_REGIONS):
+
+		C[i][j] += seed_matrix[i][j]
+		C[j][i] += seed_matrix[i][j]
+
+	if debug:
+		print C
+
+# ----------------------------------------------
+# Save connectome to subject folder
+# ----------------------------------------------
+
+f=open(connectome_file, 'w')
+
+csvwriter = csv.writer( f )
+
+csvwriter.writerows( C )
+
+f.close()
+

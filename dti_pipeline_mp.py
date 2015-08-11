@@ -25,7 +25,7 @@ import os
 import subprocess
 
 arguments_names = ["config", "COMPFILE", "PARMFILE", "SubjectFolder", "SubjectList", "Flags"]
-flag_names = ["dwi_to_dti","autoseg","fdt_masks","fdt_bedpost","fdt_probtrackx2"]
+flag_names = ["dwi_to_dti","autoseg","fdt_masks","fdt_bedpost","fdt_probtrackx2","connectome"]
 
 NUM_ARGUMENTS = 1
 NUM_PARAMETERS = len( argument_names ) - 1
@@ -364,18 +364,27 @@ for subject in f.readlines():
         "SubjectFolder":current_subject_folder, 
         "ATLAS":final_gm_atlas_warp })
 
-      if os.system("python fdt_probtrackx2.py -config " + probtrack_config_file ) != 0:
-        print "the fdt_probtrackx2.py script has failed!"
-        exit(-1)
-
-      #cmd = ["python", "fdt_probtrackx2.py", "-config", probtrack_config_file ]
-      #subprocess.Popen( cmd )
+      cmd = ["python", "fdt_probtrackx2.py", "-config", probtrack_config_file ]
+      subprocess.Popen( cmd )
     
     else:
       print "FDT probtrack pipeline component not executed for region " + str(i) + "!"
 
   # ----------------------------------------------
   # Step 6: Create subject connectome
+  #
+  # Not executed in multi-process (mp) version
+  #
+  # Only config file generated!
+  #
+  # To run connectome pipeline component simply 
+  # type at in a shell:
+  #
+  # > python connectome.py -config <subject_folder/config/config_connectome.txt
+  #
+  # where <subject_folder> must be replaced with the 
+  # fully qualified path of the subject's folder
+  #
   # ----------------------------------------------
 
   if flag_arguments["connectome"] == "yes":
@@ -384,11 +393,7 @@ for subject in f.readlines():
 
     createConfigFile( config_file, {"SubjectFolder":current_subject_folder} )
 
-    print "Executing connectome pipeline component:"
-
-    if os.system("python connectome.py -config " + config_file ) != 0:
-      print "FDT connectome component failed ... exiting pipeline!"
-      exit(-1)
+    print "Configuratin file for connectome pipeline component created [ " + config_file + " ] "
 
   else:
     print "FDT connectome component not executed!"
