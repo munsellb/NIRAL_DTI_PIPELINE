@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-
 #
-#  dti_pipeline.py
+#  dti_pipeline_mp.py (multiprocess verison)
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -119,8 +119,8 @@ def checkParameters(parameters, valid_ones):
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print ""
-  print "------This is the main script of the pipeline------"
-  print "Syntax to run this script: python dti_pipeline.py -config config_dti_pipeline.txt "
+  print "------DTI Pipeline multiprocess (mp) version ------"
+  print "Syntax to run this script: python dti_pipeline_mp.py -config config_dti_pipeline.txt "
   print ""
   print "The config file requires the following format:"
   print "COMPFILE: AutoSeg computation file"

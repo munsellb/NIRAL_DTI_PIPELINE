@@ -119,7 +119,7 @@ def checkParameters(parameters, valid_ones):
 
 if len(sys.argv) > 1 and sys.argv[1] == "--help":
   print ""
-  print "------This is the main script of the pipeline------"
+  print "------DTI pipeline------"
   print "Syntax to run this script: python dti_pipeline.py -config config_dti_pipeline.txt "
   print ""
   print "The config file requires the following format:"
@@ -367,9 +367,6 @@ for subject in f.readlines():
       if os.system("python fdt_probtrackx2.py -config " + probtrack_config_file ) != 0:
         print "the fdt_probtrackx2.py script has failed!"
         exit(-1)
-
-      #cmd = ["python", "fdt_probtrackx2.py", "-config", probtrack_config_file ]
-      #subprocess.Popen( cmd )
     
     else:
       print "FDT probtrack pipeline component not executed for region " + str(i) + "!"
