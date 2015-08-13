@@ -28,7 +28,7 @@ arguments_names = ["config", "COMPFILE", "PARMFILE", "SubjectFolder", "SubjectLi
 flag_names = ["dwi_to_dti","autoseg","fdt_masks","fdt_bedpost","fdt_probtrackx2","connectome"]
 
 NUM_ARGUMENTS = 1
-NUM_PARAMETERS = len( argument_names ) - 1
+NUM_PARAMETERS = len( arguments_names ) - 1
 FLAG_PARAMETERS = len( flag_names )
 NUM_REGIONS = 83
 
