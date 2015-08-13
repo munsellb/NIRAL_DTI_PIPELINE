@@ -180,7 +180,7 @@ for i in range(0,NUM_REGIONS):
 	for j in range(0,NUM_REGIONS):
 
 		C[i][j] += seed_matrix[i][j]
-		C[j][i] += seed_matrix[i][j]
+		C[j][i] = C[i][j]
 
 	if debug:
 		print C
