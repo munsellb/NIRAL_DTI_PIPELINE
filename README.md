@@ -36,7 +36,7 @@ As illustrated, the pipeline defines six components that perform the sequence of
     </ul>
 <li><b>FDT bedpost:</b> Execute the FDT Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques (bedpostx) algorithm that includes modeling for crossing fibers.</li>
 <li><b>FDT probtrack:</b> Execute the FDT probabilistic tracking with crossing fibers (probtrackx) algorithm for each seed region.</li>
-<li><b>Connectome:</b> Create NxN connectivity matrix using output of probtrack results.</li>
+<li><b>Connectome:</b> Create NxN connectivity matrix using the probtrack results.</li>
 </ol>
 
 <h3>2. Configuring and running the pipeline</h3>
