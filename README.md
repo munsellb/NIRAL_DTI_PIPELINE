@@ -78,3 +78,11 @@ In general, the flag file indicates the pipeline components to be executed. A ``
 Example <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/example_config">configuration files</a> and <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/autoseg_templates">autoseg template</a> files can be found in the github repository. 
 
 <h3>3. Pipeline component specification</h3>
+---
+<h5>DWI to DTI</h5> 
+<h5>AutoSeg</h5>
+<h5>FDT masks</h5>
+<h5>FDT bedpost</h5>
+<h5>FDT probtrack</h5>
+<h5>Connectome</h5>
+
