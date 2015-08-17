@@ -8,7 +8,7 @@
 </ol>
 
 <h3>Pipeline flow diagram</h3>
-
+---
 !["flow diagram"](https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/pipeline_img.png)
 
 The flow diagram shown above represents the single-process pipeline version. The major difference between the multi-process and single-process version is the multi-process version computes all the seed regions in parallel (i.e. does not include a loop that sequentially processes each seed region).
@@ -31,7 +31,7 @@ As illustrated, the pipeline defines six components that perform the sequence of
 </ol>
 
 <h3>Configuring and running the pipeline</h3>
-
+---
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
 
 ```python
