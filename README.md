@@ -7,11 +7,21 @@
 The flow diagram shown above represents the single-process pipeline version. The major difference between the multi-process and single-process version is the multi-process version computes all the seed regions in parallel (i.e. does not include a loop that sequentially processes each seed region).
 
 As illustrated, the pipeline defines six components that perform the following operations:
-<ul>
+<ol>
 <li>DWI to DTI: This takes the skull stripped DWI image and creates a DTI, RD, AD, FA, and DWI-b0 image volume.</li>
-</ul>
-
-
+<li>AutoSeg: Creates a white matter, gray matter, and CSF segmentations using the Imperial atlas and the T1 and T2 images.</li>
+<li>FDT masks: Creates the masks required to run FDT bedpost and probtrack. Specifically,</li>
+    <ul>
+    <li>no_diff_brain mask</li>
+    <li>waypoint mask</li>
+    <li>exclusion mask</li>
+    <li>seed masks (one for each brain region defined in Imperial parcellation)</li>
+    <li>termination masks (one for each brain region defined in Imperial parcellation)</li>
+    </ul>
+</i>FDT bedpost: Execute the FDT Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques (bedpostx) algorithm that includes modeling for crossing fibers.</li>
+<li>FDT probtrack: Execute the FDT probabilistic tracking with crossing fibers (probtrackx) algorithm for each seed region.</li>
+<li>Connectome: Create NxN connectivity matrix using output of probtrack results.</li>
+</ol>
 
 <h3> Configuring and running the pipeline</h3>
 
