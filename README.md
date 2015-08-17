@@ -1,6 +1,6 @@
 # NIRAL_DTI_PIPELINE
 
-<h1> Configuring and running the pipeline</h1>
+<h5> Configuring and running the pipeline</h5>
 
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
 
