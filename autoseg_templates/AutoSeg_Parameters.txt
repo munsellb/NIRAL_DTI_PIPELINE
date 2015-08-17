@@ -1,0 +1,157 @@
+//     Automatic Segmentation Parameter File
+
+// Atlases
+Common Coordinate Image: /tools/atlas/BrainROIAtlas/pediatric-2years-asym-Imperial/1year-Average-IBIS-MNI-t1w-stripped.nrrd
+Common Coordinate Image Type: T1
+Tissue Segmentation Atlas Directory: /tools/atlas/BrainsegAtlas/pediatric-atlas-1year-T1-ABC/DeepGray5Class/stripped/
+Tissue Segmentation Atlas Type: T1
+
+// Loop
+Loop: 0
+Atlas Loop: /tools/atlas/BrainsegAtlas/pediatric-atlas-1year-T1-ABC/DeepGray5Class/stripped/
+Loop - Number of iterations: 1
+ROI Atlas File: /tools/atlas/BrainROIAtlas/pediatric-2years-asym-Imperial/1year-Average-IBIS-MNI-t1w-stripped.nrrd
+
+ROI Second Atlas File: /tools/atlas/BrainROIAtlas/pediatric-2years-asym-Imperial/1year-Average-IBIS-MNI-t2w-stripped.nrrd
+
+// Subcortical Structures
+Subcortical Structure Segmentation: 0
+Amygdala Left: 
+Amygdala Right: 
+Caudate Left: 
+Caudate Right: 
+Hippocampus Left: 
+Hippocampus Right: 
+Pallidus Left: 
+Pallidus Right: 
+Putamen Left: 
+Putamen Right: 
+Lateral Ventricle Left: 
+Lateral Ventricle Right: 
+
+// Generic ROI Maps
+Generic ROI Segmentation: 0
+ROI File 1: 
+ROI File 2: 
+ROI File 3: 
+ROI File 4: 
+ROI File 5: 
+
+// Parcellation Maps
+Parcellation Map Segmentation: 1
+Tissue Map: Hard
+Parcellation File 1: /tools/atlas/BrainROIAtlas/pediatric-2years-asym-Imperial/Parcellation.nrrd
+Parcellation File 2: /tools/atlas/BrainROIAtlas/pediatric-2years-asym-Imperial/Imperial_Parc_SubCort_Extended.nrrd
+Parcellation File 3: 
+
+// Tissue Segmentation
+EM Software: ABC
+Filter Iterations: 10
+Filter TimeStep: 0.01
+Filter Method: Curvature flow
+Max Bias Degree: 4
+Initial Distribution Estimator: robust
+Prior 1: 1.3
+Prior 2: 1
+Prior 3: 0.7
+Prior 4: 1
+Prior 5: 1
+Prior 6: 0
+Prior 7: 0
+Prior 8: 0
+Prior 9: 0
+Fluid Atlas Warp: 0
+Fluid Atlas Affine: 0
+Fluid Atlas FATW: 0
+ANTS Warp for ABC: 1
+Fluid Atlas Warp Iterations: 50
+Fluid Atlas Warp Max Step: 0.1
+ANTS with brainmask: 0
+Use Initital Affine Transform: 0
+Atlas Linear Mapping: id
+Image Linear Mapping: id
+
+// Grid Template
+Rigid Registration: 0
+Is ROIAtlasGridTemplate: 1
+GridTemplate SizeX: 0
+GridTemplate SizeY: 0
+GridTemplate SizeZ: 0
+GridTemplate SpacingX: 0
+GridTemplate SpacingY: 0
+GridTemplate SpacingZ: 0
+Registration Initialization: useGeometryAlign
+Use T1 initial transform: 0
+
+// Atlas Warping
+Warping Method: ANTS
+// - Fluid Warping parameters
+Alpha: 0.01
+Beta: 0.01
+Gamma: 0.001
+Max Perturbation: 0.5
+NumBasis: 0.01
+Scale 4 - Number Of Iterations: 50
+Scale 2 - Number Of Iterations: 25
+Scale 1 - Number Of Iterations: 100
+// - BRAINSDemonWarp parameters
+Registration Filter Type: LogDemons
+Deformation Field Smoothing Sigma: 2
+Pyramid Levels: 5
+Moving Shrink Factors: 16,16,16
+Fixed Shrink Factors: 16,16,16
+Iteration Count Pyramid Levels: 300,50,30,20,15
+// - ANTS parameters
+ANTS Iterations: 100x50x25
+ANTS CC weight: 1
+ANTS CC region radius: 2
+ANTS MI weight: 0
+ANTS MI bins: 8
+ANTS MSQ weight: 0
+ANTS CC weight for 2nd modality: 1
+ANTS CC region radius for 2nd modality: 2
+ANTS MI weight for 2nd modality: 0
+ANTS MI bins for 2nd modality: 0
+ANTS MSQ weight for 2nd modality: 0
+ANTS Registration Type: GreedyDiffeomorphism
+ANTS Registration Step: 0.125
+ANTS Gaussian Smoothing: 1
+ANTS Gaussian Sigma: 3
+ANTS Number of Threads: 4
+
+// Skull Stripping
+Delete Vessels: 0
+
+// Intensity Rescaling
+Intensity Rescaling: Histogram quantile
+
+// Regional histogram
+Quantiles: 1,5,33,50,66,95,99
+Point Spacing: 10
+
+// N4 ITK Bias Field Correction
+N4 ITK Bias Field Correction: 0
+N4 Number of iterations: 50,40,30
+N4 Spline distance: 0
+N4 Shrink factor: 4
+N4 Convergence threshold: 0.0001
+N4 BSpline grid resolutions: 1,1,1
+N4 BSpline alpha: 0
+N4 BSpline beta: 0.5
+N4 Histogram sharpening: 0
+N4 BSpline order: 3
+
+Bias Correction stripped image: 0
+The Version of Slicer Used: 4.3
+
+// Reorientation
+Reorientation: 0
+Input Orientation: 
+Output Orientation: 
+
+// Multi-Atlas Segmentation
+Label Fusion Algorithm: Weighted Majority Voting
+Intensity Energy Weight: 0.5
+Harmonic Energy Weight: 0.5
+Shape Energy Weight: 0.5
+Multi-atlas directory: /tools/atlas/BrainROIAtlas/pediatric-multi-atlas-1-2-years-IBIS/

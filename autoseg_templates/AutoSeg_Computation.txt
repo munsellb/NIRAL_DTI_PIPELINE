@@ -1,0 +1,49 @@
+//     Automatic Segmentation Computation File
+
+// Process Data Directory: /NIRAL/work/munsell/sandbox/subjects/subject5/struct/
+
+// Data
+Is T1 Image: 1
+Is T2 Image: 1
+Is PD Image: 0
+// Data AutoSeg Directory
+// Data AutoSeg Directory: AutoSeg_Process
+
+// Automatic Data Selection
+// Data Directory: /NIRAL/work/munsell/sandbox/subjects/subject5/struct/
+// AuxData
+Is AuxT1 Image: 0
+Is AuxT2 Image: 0
+Is AuxPD Image: 0
+Is Aux1 Image: 0
+Is Aux2 Image: 0
+Is Aux3 Image: 0
+Is Aux4 Image: 0
+Is Aux5 Image: 0
+Is Aux6 Image: 0
+Is Aux7 Image: 0
+Is Aux8 Image: 0
+
+T1 Files: *T1_SkullStripped_corrected.nrrd
+T2 Files: *T2_SkullStripped_corrected.nrrd
+PD Files: 
+
+// Computation Options
+Compute Volume: 1
+Compute cortical thickness: 0
+Recompute: 0
+Use Condor: 0
+
+// Randomize the subject order prior to processing?
+Randomize Subject Order: 0
+// Multi-Modality Segmentation Options
+// Multi vs Single-Atlas Segmentation Options
+Compute Multi-modality Single-atlas Segmentation: 1
+Compute Multi-modality Multi-atlas Segmentation: 0
+Compute Single-atlas Segmentation: 1
+Compute Multi-atlas Segmentation: 0
+Conduct Atlas-Atlas Registration: 0
+Recalculate Atlas-Target Energy: 0
+Recalculate Atlas-Atlas Energy: 0
+
+

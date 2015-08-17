@@ -167,6 +167,8 @@ for i in range(0,NUM_REGIONS):
 
 	f.close()
 
+print seed_matrix
+
 # ----------------------------------------------
 # Create the connectome using connectivity data
 # in seed_matrix
@@ -177,9 +179,9 @@ for i in range(0,NUM_REGIONS):
 	if debug:
 		print seed_matrix[i][0:NUM_REGIONS]
 
-	for j in range(0,NUM_REGIONS):
+	for j in range(i,NUM_REGIONS):
 
-		C[i][j] += seed_matrix[i][j]
+		C[i][j] = seed_matrix[i][j] + seed_matrix[j][i]
 		C[j][i] = C[i][j]
 
 	if debug:
