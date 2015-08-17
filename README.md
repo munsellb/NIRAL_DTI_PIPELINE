@@ -7,7 +7,7 @@
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
 </ol>
 
-<h3>Pipeline flow diagram</h3>
+<h3>1. Pipeline flow diagram</h3>
 ---
 !["flow diagram"](https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/pipeline_img.png)
 
@@ -30,7 +30,7 @@ As illustrated, the pipeline defines six components that perform the sequence of
 <li><b>Connectome:</b> Create NxN connectivity matrix using output of probtrack results.</li>
 </ol>
 
-<h3>Configuring and running the pipeline</h3>
+<h3>2. Configuring and running the pipeline</h3>
 ---
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
 
