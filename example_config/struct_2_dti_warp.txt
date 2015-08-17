@@ -1,4 +1,0 @@
-REF:/home/workstation1/sandbox/global/dti_atlas/PediatricAtlas_071714FinalAtlasRD.nrrd
-MOV:/home/workstation1/sandbox/global/struct_atlas/atlas90-Parclabel_1year-Average-IBIS.nrrd
-OUT_ANTS_PREFIX:warp_
-SubjectFolder:/home/workstation1/sandbox/global/dti_atlas
