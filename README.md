@@ -1,6 +1,7 @@
 # NIRAL_DTI_PIPELINE
 
 <h3> Table of contents </h3>
+---
 <ol>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#pipeline-flow-diagram">Pipeline flow diagram</a></li>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
