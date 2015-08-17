@@ -1,0 +1,6 @@
+dwi_to_dti:no
+autoseg:no
+fdt_masks:no
+fdt_bedpost:no
+fdt_probtrackx2:yes
+connectome:no

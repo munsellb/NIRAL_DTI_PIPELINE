@@ -1,0 +1,5 @@
+SubjectFolder:/NIRAL/work/munsell/dti_test/subjects
+SubjectList:/NIRAL/work/munsell/dti_test/subjects/subjects.txt
+COMPFILE:/NIRAL/work/munsell/dti_test/global/AutoSeg_Computation.txt
+PARMFILE:/NIRAL/work/munsell/dti_test/global/AutoSeg_Parameters.txt
+Flags:config_pipeline_flags.txt
