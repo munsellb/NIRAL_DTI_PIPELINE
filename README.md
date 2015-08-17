@@ -2,7 +2,9 @@
 
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
 
-_ python dti_pipeline.py –config config_pipeline.txt
+```python
+python dti_pipeline.py –config config_pipeline.txt
+```
 
 and to run the the multi-process version form the command line type:
 
