@@ -2,7 +2,7 @@
 
 <h3> Pipeline flow diagram </h3>
 
-![alt tag](https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/pipeline_img.png)
+!["flow diagram"](https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/pipeline_img.png)
 
 <h3> Configuring and running the pipeline</h3>
 
