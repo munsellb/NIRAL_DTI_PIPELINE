@@ -4,6 +4,22 @@
 
 !["flow diagram"](https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/pipeline_img.png)
 
+The flow diagram shown above represents the single-process pipeline version. The major difference between the multi-process and single-process version is the multi-process version computes all the seed regions in parallel (i.e. does not include a loop that sequentially processes each seed region).
+
+As illustrated, the pipeline defines six components that perform the following operations:
+1. DWI to DTI: This takes the skull stripped DWI image and creates a DTI, RD, AD, FA, and DWI-b0 image volume.
+2. AutoSeg: Creates a white matter, gray matter, and CSF segmentations using the Imperial atlas and the T1 and T2 images.
+3. FDT masks: Creates the masks required to run FDT bedpost and probtrack. Specifically, 
+    * no_diff_brain mask
+    * waypoint mask
+    * exclusion mask
+    * seed masks (one for each brain region defined in Imperial parcellation)
+    * termination masks (one for each brain region defined in Imperial parcellation)
+4. FDT bedpost: Execute the FDT Bayesian Estimation of Diffusion Parameters Obtained using Sampling Techniques (bedpostx) algorithm that includes modeling for crossing fibers.
+5. FDT probtrack: Execute the FDT probabilistic tracking with crossing fibers (probtrackx) algorithm for each seed region.
+6. Connectome: Create NxN connectivity matrix using output of probtrack results.
+
+
 <h3> Configuring and running the pipeline</h3>
 
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
