@@ -67,7 +67,7 @@ subject_id2
 subject_id3
 subject_id4
 ```
-The subjects.txt file could be created using the command ```ls > subjects.txt```. Then the dti pipeline configuration file would have the following key-value pairs.
+The subjects.txt file can be created using the command ```ls > subjects.txt```. Then the dti pipeline configuration file would have the following key-value pairs.
 
 ```
 SubjectFolder:/data/study_subjects
