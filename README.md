@@ -6,6 +6,14 @@
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#1-pipeline-flow-diagram">Pipeline flow diagram</a></li>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#2-configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#3-pipeline-component-specification">Pipeline component specification</a></li>
+<ul>
+<li>DWI to DTI</li> 
+<li>AutoSeg</li>
+<li>FDT masks</li>
+<li>FDT bedpost</li>
+<li>FDT probtrack</li>
+<li>Connectome</li>
+</ul>
 </ol>
 
 <h3>1. Pipeline flow diagram</h3>
