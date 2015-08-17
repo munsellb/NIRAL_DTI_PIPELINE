@@ -1,1 +1,3 @@
-Subject5/Upsampled_1mm
+subject1
+subject2
+subject3
