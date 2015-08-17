@@ -7,12 +7,12 @@
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#2-configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#3-pipeline-component-specification">Pipeline component specification</a></li>
 <ul>
-<li>DWI to DTI</li> 
-<li>AutoSeg</li>
-<li>FDT masks</li>
-<li>FDT bedpost</li>
-<li>FDT probtrack</li>
-<li>Connectome</li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#dwi-to-dti">DWI to DTI</a></li> 
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#autoseg">AutoSeg</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#fdt-masks">FDT masks</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#fdt-bedpost">FDT bedpost</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#fdt-probtrack">FDT probtrack</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#connectome">Connectome</a></li>
 </ul>
 </ol>
 
