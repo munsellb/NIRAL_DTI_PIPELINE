@@ -1,7 +1,5 @@
 //     Automatic Segmentation Computation File
 
-// Process Data Directory: /NIRAL/work/munsell/sandbox/subjects/subject5/struct/
-
 // Data
 Is T1 Image: 1
 Is T2 Image: 1
@@ -10,7 +8,6 @@ Is PD Image: 0
 // Data AutoSeg Directory: AutoSeg_Process
 
 // Automatic Data Selection
-// Data Directory: /NIRAL/work/munsell/sandbox/subjects/subject5/struct/
 // AuxData
 Is AuxT1 Image: 0
 Is AuxT2 Image: 0
