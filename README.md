@@ -12,6 +12,26 @@ and to run the the multi-process version form the command line type:
 python dti_pipeline_mp.py –config config_pipeline.txt
 ```
 
-In general, the configuration file defines where the subject folder is located, a list that includes only the subjects to be processed, and the locations of the Autoseg computation and parameter files. Example <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/example_config">configuration files</a> and <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/autoseg_templates">autoseg template</a> files can be found in the github repository. 
+In general, the configuration file defines where the subject folder is located, a list that includes only the subjects to be processed, and the locations of the Autoseg computation and parameter files. For instance, on a Linux/UNIX/Mac system if the subject is located at
+
+```
+/data/study_subjects
+```
+
+and in the study subject folder has the following sub-folders (typically named using the subject specific unique id)
+
+```
+subject_id1
+subject_id2
+subject_id3
+subject_id4
+```
+The subjects.txt file could be created using the command ```ls > subjects.txt```. The the dti pipeline configuration file would then include following key-value pairs.
+
+```
+SubjectFolder:/data/study_subjects
+SubjectList:/data/study_subjects/subjects.txt
+```
+Example <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/example_config">configuration files</a> and <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/autoseg_templates">autoseg template</a> files can be found in the github repository. 
 
 
