@@ -3,8 +3,8 @@
 <h3> Table of contents </h3>
 ---
 <ol>
-<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#1.-pipeline-flow-diagram">Pipeline flow diagram</a></li>
-<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#2.-configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#1-pipeline-flow-diagram">Pipeline flow diagram</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#2-configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
 </ol>
 
 <h3>1. Pipeline flow diagram</h3>
