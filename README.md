@@ -7,6 +7,7 @@
 The flow diagram shown above represents the single-process pipeline version. The major difference between the multi-process and single-process version is the multi-process version computes all the seed regions in parallel (i.e. does not include a loop that sequentially processes each seed region).
 
 As illustrated, the pipeline defines six components that perform the following operations:
+```
 <ol>
 <li><b>DWI to DTI:</b> This takes the skull stripped DWI image and creates a DTI, RD, AD, FA, and DWI-b0 image volume.</li>
 <li><b>AutoSeg:</b> Creates a white matter, gray matter, and CSF segmentations using the Imperial atlas and the T1 and T2 images.</li>
@@ -22,6 +23,7 @@ As illustrated, the pipeline defines six components that perform the following o
 <li><b>FDT probtrack:</b> Execute the FDT probabilistic tracking with crossing fibers (probtrackx) algorithm for each seed region.</li>
 <li><b>Connectome:</b> Create NxN connectivity matrix using output of probtrack results.</li>
 </ol>
+```
 
 <h3> Configuring and running the pipeline</h3>
 
