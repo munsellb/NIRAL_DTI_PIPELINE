@@ -8,7 +8,7 @@ The flow diagram shown above represents the single-process pipeline version. The
 
 As illustrated, the pipeline defines six components that perform the following operations:
 <ol>
-<li>###DWI to DTI: This takes the skull stripped DWI image and creates a DTI, RD, AD, FA, and DWI-b0 image volume.</li>
+<li>**DWI to DTI:** This takes the skull stripped DWI image and creates a DTI, RD, AD, FA, and DWI-b0 image volume.</li>
 <li>AutoSeg: Creates a white matter, gray matter, and CSF segmentations using the Imperial atlas and the T1 and T2 images.</li>
 <li>FDT masks: Creates the masks required to run FDT bedpost and probtrack. Specifically,</li>
     <ul>
