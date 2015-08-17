@@ -8,8 +8,10 @@ python dti_pipeline.py –config config_pipeline.txt
 
 and to run the the multi-process version form the command line type:
 
-_ python dti_pipeline_mp.py –config config_pipeline.txt
+```python
+python dti_pipeline_mp.py –config config_pipeline.txt
+```
 
-The configuration file defines where the subject folder is located, a list that defines the subjects to be processed, and the locations of the Autoseg computation and parameter files. Example configuration files and the autoseg template files can be found in the gitbub repository. 
+In general, the configuration file defines where the subject folder is located, a list that includes only the subjects to be processed, and the locations of the Autoseg computation and parameter files. Example configuration files and the autoseg template files can be found in the gitbub repository. 
 
 
