@@ -5,6 +5,7 @@
 <ol>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#1-pipeline-flow-diagram">Pipeline flow diagram</a></li>
 <li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#2-configuring-and-running-the-pipeline">Configuring and running the pipeline</a></li>
+<li><a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE/blob/master/README.md#3-pipeline-component-specfications">Pipeline component specifications</a></li>
 </ol>
 
 <h3>1. Pipeline flow diagram</h3>
@@ -76,4 +77,4 @@ In general, the flag file indicates the pipeline components to be executed. A ``
 
 Example <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/example_config">configuration files</a> and <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/autoseg_templates">autoseg template</a> files can be found in the github repository. 
 
-
+<h3>3. Pipeline component specifications</h3>
