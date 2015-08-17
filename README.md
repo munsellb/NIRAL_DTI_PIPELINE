@@ -18,7 +18,7 @@ In general, the configuration file defines where the subject folder is located, 
 /data/study_subjects
 ```
 
-and in this folder the following sub-folders (typically named using the subject specific unique id) 
+and in this folder the following sub-folders (typically named using subject specific unique ids) 
 
 ```
 subject_id1
