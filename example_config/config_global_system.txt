@@ -1,6 +1,0 @@
-ATLAS:/home/workstation1/sandbox/global/dti_atlas/registration/atlas90-Parclabel_1year-Average-IBIS_deform.nii.gz
-T1:/home/workstation1/sandbox/global/struct_atlas/1year-Average-IBIS-MNI-t1w.nrrd
-T2:/home/workstation1/sandbox/global/struct_atlas/1year-Average-IBIS-MNI-t2w.nrrd
-SubjectFolder:/home/workstation1/sandbox/Subjects
-SubjectList:/home/workstation1/sandbox/Subjects/subjects.txt
-flags:/home/workstation1/sandbox/Subjects/flags.txt

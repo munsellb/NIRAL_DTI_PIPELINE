@@ -1,3 +1,0 @@
-INPUT_IMAGE:atlas90-Parclabel_1year-Average-IBIS_warp.nii.gz
-EXTRACT_LABEL:1
-SubjectFolder:/home/workstation2/Documents/Subject4/Upsampled_1mm
