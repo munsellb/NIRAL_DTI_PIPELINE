@@ -1,5 +1,9 @@
 # NIRAL_DTI_PIPELINE
 
+<h3> Pipeline flow diagram </h3>
+
+![alt tag](https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/pipeline_img.png)
+
 <h3> Configuring and running the pipeline</h3>
 
 There are two ways to run the pipeline: using the single-process version or using the multi-process version. To run the single process version from the command line type:
@@ -42,7 +46,7 @@ COMPFILE:/data/git/NIRAL_DTI_PIPELINE/autoseg_templates/AutoSeg_Computation.txt
 PARMFILE:/data/git/NIRAL_DTI_PIPELINE/autoseg_templates/AutoSeg_Parameters.txt
 Flags:/data/git/NIRAL_DTI_PIPELINE/example_config/config_pipeline_flags.txt
 ```
-In general, the flag file indicates the pipeline components will be executed. A ```yes``` value indicates the component will be executed, and a ```no``` value indicates the component will not be executed.
+In general, the flag file indicates the pipeline components to be executed. A ```yes``` value indicates the component will be executed, and a ```no``` value indicates the component will not be executed.
 
 Example <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/example_config">configuration files</a> and <a href="https://github.com/munsellb/NIRAL_DTI_PIPELINE.git/autoseg_templates">autoseg template</a> files can be found in the github repository. 
 
